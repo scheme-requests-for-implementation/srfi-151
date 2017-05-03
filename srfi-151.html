@@ -185,10 +185,10 @@ SRFI 33, this SRFI adopts the SRFI 60 ordering instead.
 <tt>list->integer</tt> was not clearly specified.
 When SRFI 142 was written,
 the specification was clarified to process bits from least significant to most
-significant, so that <tt>(integer->list 6) => (#f #t #t)</tt>.  
+significant, so that <tt>(integer->list 6) =&gt; (#f #t #t)</tt>.  
 However, the SLIB and SRFI 60 implementation
 processed them from the most significant bit to the least-significant bit,
-so that <tt>(integer->list 6) => (#t #t #f)</tt>.
+so that <tt>(integer->list 6) =&gt; (#t #t #f)</tt>.
 Because this was
 a silent breaking change, this SRFI returns these procedures to the SLIB and SRFI 60 processing
 order, and the same with the closely analogous <tt>integer->vector</tt>, <tt>vector->integer</tt>,
@@ -248,8 +248,8 @@ the next or 2<sup>1</sup> bit, and so forth.
 Returns the bitwise complement of <em>i</em>; that is, all 1 bits are changed
 to 0 bits and all 0 bits to 1 bits.
 </p>
-<pre>  (bitwise-not 10) => -11
-  (bitwise-not -37) => 36
+<pre>  (bitwise-not 10) =&gt; -11
+  (bitwise-not -37) =&gt; 36
 </pre><p>
 The following ten procedures correspond to the useful set
 of non-trivial two-argument boolean functions. For each such function,
@@ -282,11 +282,11 @@ everywhere that a, b and c all agree. That is, it does <em>not</em> produce
 Rather, it produces <tt>(bitwise-eqv a (bitwise-eqv b c))</tt> or the equivalent
 <tt>(bitwise-eqv (bitwise-eqv a b) c)</tt>.
 </p>
-<pre>      (bitwise-ior 3  10)     =>  11
-      (bitwise-and 11 26)     =>  10
-      (bitwise-xor 3 10)      =>   9
-      (bitwise-eqv 37 12)     => -42
-      (bitwise-and 37 12)     =>   4
+<pre>      (bitwise-ior 3  10)     =&gt;  11
+      (bitwise-and 11 26)     =&gt;  10
+      (bitwise-xor 3 10)      =&gt;   9
+      (bitwise-eqv 37 12)     =&gt; -42
+      (bitwise-and 37 12)     =&gt;   4
 </pre><p>
 <tt>(bitwise-nand </tt><em>i j</em><tt>)</tt><br />
 <tt>(bitwise-nor </tt><em>i j</em><tt>)</tt><br />
@@ -298,12 +298,12 @@ Rather, it produces <tt>(bitwise-eqv a (bitwise-eqv b c))</tt> or the equivalent
 <p>
 These operations are not associative.
 </p>
-<pre>      (bitwise-nand 11 26) =>  -11
-      (bitwise-nor  11 26) => -28
-      (bitwise-andc1 11 26) => 16
-      (bitwise-andc2 11 26) => 1
-      (bitwise-orc1 11 26) => -2
-      (bitwise-orc2 11 26) => -17
+<pre>      (bitwise-nand 11 26) =&gt;  -11
+      (bitwise-nor  11 26) =&gt; -28
+      (bitwise-andc1 11 26) =&gt; 16
+      (bitwise-andc2 11 26) =&gt; 1
+      (bitwise-orc1 11 26) =&gt; -2
+      (bitwise-orc2 11 26) =&gt; -17
 </pre><h2 id="Integeroperations">Integer operations</h2>
 <p>
 <tt>(arithmetic-shift </tt><em>i count</em><tt>)</tt>
@@ -311,26 +311,26 @@ These operations are not associative.
 <p>
 Returns the arithmetic left shift when <em>count</em>>0; right shift when <em>count</em>&lt;0.
 </p>
-<pre>    (arithmetic-shift 8 2) => 32
-    (arithmetic-shift 4 0) => 4
-    (arithmetic-shift 8 -1) => 4
-    (arithmetic-shift -100000000000000000000000000000000 -100) => -79
+<pre>    (arithmetic-shift 8 2) =&gt; 32
+    (arithmetic-shift 4 0) =&gt; 4
+    (arithmetic-shift 8 -1) =&gt; 4
+    (arithmetic-shift -100000000000000000000000000000000 -100) =&gt; -79
 </pre><p>
 <tt>(bit-count </tt><em>i</em><tt>)</tt>
 </p>
 <p>
 Returns the population count of 1's (<em>i</em> >= 0) or 0's (<em>i</em> &lt; 0).  The result is always non-negative.
 </p>
-<pre>    (bit-count 0) =>  0
-    (bit-count -1) =>  0
-    (bit-count 7) =>  3
-    (bit-count  13) =>  3 ;Two's-complement binary: ...0001101
-    (bit-count -13) =>  2 ;Two's-complement binary: ...1110011
-    (bit-count  30) =>  4 ;Two's-complement binary: ...0011110
-    (bit-count -30) =>  4 ;Two's-complement binary: ...1100010
-    (bit-count (expt 2 100)) =>  1
-    (bit-count (- (expt 2 100))) =>  100
-    (bit-count (- (1+ (expt 2 100)))) =>  1
+<pre>    (bit-count 0) =&gt;  0
+    (bit-count -1) =&gt;  0
+    (bit-count 7) =&gt;  3
+    (bit-count  13) =&gt;  3 ;Two's-complement binary: ...0001101
+    (bit-count -13) =&gt;  2 ;Two's-complement binary: ...1110011
+    (bit-count  30) =&gt;  4 ;Two's-complement binary: ...0011110
+    (bit-count -30) =&gt;  4 ;Two's-complement binary: ...1100010
+    (bit-count (expt 2 100)) =&gt;  1
+    (bit-count (- (expt 2 100))) =&gt;  100
+    (bit-count (- (1+ (expt 2 100)))) =&gt;  1
 </pre><p>
 <tt>(integer-length </tt><em>i</em><tt>)</tt>
 </p>
@@ -351,13 +351,13 @@ to represent <em>i</em> in a signed twos-complement
 representation.
     
 </p>
-<pre>    (integer-length  0) => 0
-    (integer-length  1) => 1
-    (integer-length -1) => 0
-    (integer-length  7) => 3
-    (integer-length -7) => 3
-    (integer-length  8) => 4
-    (integer-length -8) => 3
+<pre>    (integer-length  0) =&gt; 0
+    (integer-length  1) =&gt; 1
+    (integer-length -1) =&gt; 0
+    (integer-length  7) =&gt; 3
+    (integer-length -7) =&gt; 3
+    (integer-length  8) =&gt; 4
+    (integer-length -8) =&gt; 3
 </pre><p>
 <tt>(bitwise-if </tt><em>mask i j</em><tt>)</tt>
 </p>
@@ -378,12 +378,12 @@ As always, the rightmost/least-significant bit in <em>i</em> is bit 0.
 Is bit <em>index</em> set in bitstring <em>i</em> (where <em>index</em> is a non-negative exact
 integer)?
 </p>
-<pre>    (bit-set? 1 1) =>  false
-    (bit-set? 0 1) =>  true
-    (bit-set? 3 10) =>  true
-    (bit-set? 1000000 -1) =>  true
-    (bit-set? 2 6) =>  true
-    (bit-set? 0 6) =>  false
+<pre>    (bit-set? 1 1) =&gt;  false
+    (bit-set? 0 1) =&gt;  true
+    (bit-set? 3 10) =&gt;  true
+    (bit-set? 1000000 -1) =&gt;  true
+    (bit-set? 2 6) =&gt;  true
+    (bit-set? 0 6) =&gt;  false
 </pre><p>
 <tt>(copy-bit </tt><em>index i boolean</em><tt>)</tt>
 </p>
@@ -391,9 +391,9 @@ integer)?
 Returns an integer the same as <em>i</em> except in the <em>index</em>th bit,
 which is 1 if <em>boolean</em> is <tt>#t</tt> and 0 if <em>boolean</em> is <tt>#f</tt>.
 </p>
-<pre>(copy-bit 0 0 #t) => #b1
-(copy-bit 2 0 #t) => #b100
-(copy-bit 2 #b1111 #f) => #b1011
+<pre>(copy-bit 0 0 #t) =&gt; #b1
+(copy-bit 2 0 #t) =&gt; #b100
+(copy-bit 2 #b1111 #f) =&gt; #b1011
 </pre><p>
 <tt>(bit-swap </tt><em>index<sub>1</sub> index<sub>2</sub> i</em><tt>)</tt>
 </p>
@@ -401,7 +401,7 @@ which is 1 if <em>boolean</em> is <tt>#t</tt> and 0 if <em>boolean</em> is <tt>#
 Returns an integer the same as <em>i</em> except that the <em>index<sub>1</sub></em>th bit
 and the <em>index<sub>2</sub></em>th bit have been exchanged.
 </p>
-<pre>(bit-swap 0 2 4) => #b1
+<pre>(bit-swap 0 2 4) =&gt; #b1
 </pre><p>
 <tt>(any-bit-set? </tt><em>test-bits i</em><tt>)</tt><br />
 <tt>(every-bit-set? </tt><em>test-bits i</em><tt>)</tt>
@@ -418,13 +418,13 @@ and <tt>(= </tt><em>test-bits</em><tt> (bitwise-and</tt> <em>test-bits i</em>)))
 Return the index of the first (smallest index) 1 bit in bitstring <em>i</em>.
 Return -1 if <em>i</em> contains no 1 bits (i.e., if <em>i</em> is zero).
 </p>
-<pre>    (first-set-bit 1) => 0
-    (first-set-bit 2) => 1
-    (first-set-bit 0) => -1
-    (first-set-bit 40) => 3
-    (first-set-bit -28) => 2
-    (first-set-bit (expt  2 99)) => 99
-    (first-set-bit (expt -2 99)) => 99
+<pre>    (first-set-bit 1) =&gt; 0
+    (first-set-bit 2) =&gt; 1
+    (first-set-bit 0) =&gt; -1
+    (first-set-bit 40) =&gt; 3
+    (first-set-bit -28) =&gt; 2
+    (first-set-bit (expt  2 99)) =&gt; 99
+    (first-set-bit (expt -2 99)) =&gt; 99
 </pre><h2 id="Bitfieldoperations">Bit field operations</h2>
 <p>
 These functions operate on a contiguous field of bits (a "byte," in
