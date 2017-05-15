@@ -33,7 +33,7 @@ This SRFI proposes a coherent and comprehensive set of procedures for
 performing bitwise logical operations on integers; it is
 accompanied by a reference implementation of the spec in terms of a set of
 seven core operators. The sample implementation is portable, as efficient
-as practical with pure Scheme arithmetic (it is worthwhile replacing the
+as practical with pure Scheme arithmetic (it is much more efficient to replace the
 core operators with C or assembly language if possible), and open source.
 </p>
 <p>
@@ -63,22 +63,14 @@ and generating approximate seed values for root-finders
 and transcendental function algorithms.
 </p>
 <p>
-This SRFI differs from SRFI 142 in the following respects:  
-</p><ul><li><p>
-The <tt>bitwise-if</tt> function has the argument ordering of
+This SRFI differs from SRFI 142 in only one way:
+the <tt>bitwise-if</tt> function has the argument ordering of
 SLIB, SRFI 60, and R6RS rather than the ordering of SRFI 33.</p>
-</li><li><p>The <tt>integer->list</tt>, <tt>list-integer</tt>,
-<tt>integer->vector</tt>, <tt>vector->integer</tt>, and <tt>bits</tt>
-procedures generate or accept bits in big-endian rather than
-little-endian order.</p></li></ul>
 </p>
 
 <h1>Issues</h1>
 
-<p>Should <tt>bitwise-fold</tt>, <tt>bitwise-for-each</tt>,
-<tt>bitwise-unfold</tt> and <tt>make-bitwise-generator</tt> be changed
-to process bits in big-endian order, as the conversions between integers
-and lists/vectors now do?</p>
+None at present.
 
 <h1>Rationale</h1>
 
@@ -96,7 +88,7 @@ synthesized with a snarled mess of <tt>bitwise-and</tt>s, <tt>bitwise-or</tt>s, 
 What we gain is having an agreed-upon set of names by which we can refer
 to these functions. If you believe in "small is beautiful," then what is your motivation
 for including anything beyond <tt>bitwise-nand</tt>?
-</li></ul><ul><li>Programmers doesn't have to re-implement the redundant functions, and stumble
+</li></ul><ul><li>Programmers don't have to re-implement the redundant functions, and stumble
 over the boundary cases and error checking, but can express
 themselves using a full palette of building blocks.
 </li></ul><ul><li>Compilers can directly implement many of these ops for great efficiency gains
@@ -109,8 +101,8 @@ number of ones or a finite number of zeros. Logical shifting operates on bit
 strings of some fixed size. If we shift left, then leftmost bits "fall off"
 the end (and zeros shift in on the right). If we shift right, then zeros
 shift into the string on the left (and rightmost bits fall off the end). So
-to define a logical shift operation, <em>we must specify the size of the
-window</em>. 
+to define a logical shift operation, we must specify the size of the
+window. 
 </li></ul><h2 id="CommonLisp">Common Lisp</h2>
 <p>
 The core of this  design mirrors the structure of Common Lisp's pretty closely.  Here are some differences:
@@ -159,7 +151,9 @@ SRFI 60 includes six procedures that do not have SRFI 33 equivalents.  They are 
 </li></ul><ul><li>The procedures <tt>copy-bit</tt>, <tt>integer->list</tt> and <tt>list->integer</tt> are incorporated into this SRFI with the same names.
 </li></ul><ul><li>The procedure <tt>booleans->integer</tt> is a convenient way to specify a bitwise integer: it accepts an arbitrary number of boolean arguments and returns a non-negative integer.  So in this SRFI it has the short name <tt>bits</tt>, roughly analogous to <tt>list</tt>, <tt>string</tt>, and <tt>vector</tt>.
 </li></ul><h2 id="Othersources">Other sources</h2>
-<ul><li><p>The following procedures are inspired by SRFI 133:  <tt>bit-swap</tt>,
+<ul><li><p>The following procedures are inspired by
+<a href="http://srfi.schemers.org/srfi-133/srfi-133.html">SRFI 133</a>:
+<tt>bit-swap</tt>,
 <tt>bitwise-fold</tt>, <tt>bitwise-for-each</tt>, <tt>bitwise-unfold</tt>.  </p></li>
 <li><p>The procedure <tt>bit-field-set</tt> is the counterpart of <tt>bit-field-clear</tt>.</p></li>
 <li><p>The procedures <tt>integer->vector</tt> and <tt>vector->integer</tt> are inspired by their list counterparts.</p></li>
@@ -190,18 +184,16 @@ SRFI 33, this SRFI adopts the SRFI 60 ordering instead.
 <tt>list->integer</tt> was not clearly specified.
 When SRFI 142 was written,
 the specification was clarified to process bits from least significant to most
-significant, so that <tt>(integer->list 6) =&gt; (#f #t #t)</tt>.  
+significant, so that <tt>(integer->list 6) => (#f #t #t)</tt>.  
 However, the SLIB and SRFI 60 implementation
 processed them from the most significant bit to the least-significant bit,
-so that <tt>(integer->list 6) =&gt; (#t #t #f)</tt>.
-Because this was
-a silent breaking change, this SRFI returns these procedures to the SLIB and SRFI 60 processing
-order, and the same with the closely analogous <tt>integer->vector</tt>, <tt>vector->integer</tt>,
-and <tt>bits</tt> procedures.<p>
-<p>However, because <tt>bitwise-fold</tt>, <tt>bitwise-for-each</tt>,
-<tt>bitwise-unfold</tt> and <tt>make-bitwise-generator</tt> were specified
-for the first time in SRFI 142, they continue to process bits from least
-to most significant in this SRFI despite the inconsistency.</p>
+so that <tt>(integer->list 6) => (#t #t #f)</tt>.
+This SRFI retains the little-endian order.
+The same is true of the closely analogous <tt>integer->vector</tt>, <tt>vector->integer</tt>,
+and <tt>bits</tt> procedures.
+<b>This is a silent breaking change from SLIB and SRFI 60.</b>
+</p>
+
 <h1>Specification</h1>
 
 <h2 id="Procedureindex">Procedure index</h2>
@@ -253,8 +245,8 @@ the next or 2<sup>1</sup> bit, and so forth.
 Returns the bitwise complement of <em>i</em>; that is, all 1 bits are changed
 to 0 bits and all 0 bits to 1 bits.
 </p>
-<pre>  (bitwise-not 10) =&gt; -11
-  (bitwise-not -37) =&gt; 36
+<pre>  (bitwise-not 10) => -11
+  (bitwise-not -37) => 36
 </pre><p>
 The following ten procedures correspond to the useful set
 of non-trivial two-argument boolean functions. For each such function,
@@ -287,11 +279,11 @@ everywhere that a, b and c all agree. That is, it does <em>not</em> produce
 Rather, it produces <tt>(bitwise-eqv a (bitwise-eqv b c))</tt> or the equivalent
 <tt>(bitwise-eqv (bitwise-eqv a b) c)</tt>.
 </p>
-<pre>      (bitwise-ior 3  10)     =&gt;  11
-      (bitwise-and 11 26)     =&gt;  10
-      (bitwise-xor 3 10)      =&gt;   9
-      (bitwise-eqv 37 12)     =&gt; -42
-      (bitwise-and 37 12)     =&gt;   4
+<pre>      (bitwise-ior 3  10)     =>  11
+      (bitwise-and 11 26)     =>  10
+      (bitwise-xor 3 10)      =>   9
+      (bitwise-eqv 37 12)     => -42
+      (bitwise-and 37 12)     =>   4
 </pre><p>
 <tt>(bitwise-nand </tt><em>i j</em><tt>)</tt><br />
 <tt>(bitwise-nor </tt><em>i j</em><tt>)</tt><br />
@@ -303,12 +295,12 @@ Rather, it produces <tt>(bitwise-eqv a (bitwise-eqv b c))</tt> or the equivalent
 <p>
 These operations are not associative.
 </p>
-<pre>      (bitwise-nand 11 26) =&gt;  -11
-      (bitwise-nor  11 26) =&gt; -28
-      (bitwise-andc1 11 26) =&gt; 16
-      (bitwise-andc2 11 26) =&gt; 1
-      (bitwise-orc1 11 26) =&gt; -2
-      (bitwise-orc2 11 26) =&gt; -17
+<pre>      (bitwise-nand 11 26) =>  -11
+      (bitwise-nor  11 26) => -28
+      (bitwise-andc1 11 26) => 16
+      (bitwise-andc2 11 26) => 1
+      (bitwise-orc1 11 26) => -2
+      (bitwise-orc2 11 26) => -17
 </pre><h2 id="Integeroperations">Integer operations</h2>
 <p>
 <tt>(arithmetic-shift </tt><em>i count</em><tt>)</tt>
@@ -316,26 +308,31 @@ These operations are not associative.
 <p>
 Returns the arithmetic left shift when <em>count</em>>0; right shift when <em>count</em>&lt;0.
 </p>
-<pre>    (arithmetic-shift 8 2) =&gt; 32
-    (arithmetic-shift 4 0) =&gt; 4
-    (arithmetic-shift 8 -1) =&gt; 4
-    (arithmetic-shift -100000000000000000000000000000000 -100) =&gt; -79
+<pre>    (arithmetic-shift 8 2) => 32
+    (arithmetic-shift 4 0) => 4
+    (arithmetic-shift 8 -1) => 4
+    (arithmetic-shift -100000000000000000000000000000000 -100) => -79
 </pre><p>
 <tt>(bit-count </tt><em>i</em><tt>)</tt>
 </p>
 <p>
 Returns the population count of 1's (<em>i</em> >= 0) or 0's (<em>i</em> &lt; 0).  The result is always non-negative.
 </p>
-<pre>    (bit-count 0) =&gt;  0
-    (bit-count -1) =&gt;  0
-    (bit-count 7) =&gt;  3
-    (bit-count  13) =&gt;  3 ;Two's-complement binary: ...0001101
-    (bit-count -13) =&gt;  2 ;Two's-complement binary: ...1110011
-    (bit-count  30) =&gt;  4 ;Two's-complement binary: ...0011110
-    (bit-count -30) =&gt;  4 ;Two's-complement binary: ...1100010
-    (bit-count (expt 2 100)) =&gt;  1
-    (bit-count (- (expt 2 100))) =&gt;  100
-    (bit-count (- (1+ (expt 2 100)))) =&gt;  1
+<p>
+Compatibility note:  The R6RS analogue <tt>bitwise-bit-count</tt>
+applies <tt>bitwise-not</tt> to the population count before returning it
+if <i>i</i> is negative.
+</p>
+<pre>    (bit-count 0) =>  0
+    (bit-count -1) =>  0
+    (bit-count 7) =>  3
+    (bit-count  13) =>  3 ;Two's-complement binary: ...0001101
+    (bit-count -13) =>  2 ;Two's-complement binary: ...1110011
+    (bit-count  30) =>  4 ;Two's-complement binary: ...0011110
+    (bit-count -30) =>  4 ;Two's-complement binary: ...1100010
+    (bit-count (expt 2 100)) =>  1
+    (bit-count (- (expt 2 100))) =>  100
+    (bit-count (- (1+ (expt 2 100)))) =>  1
 </pre><p>
 <tt>(integer-length </tt><em>i</em><tt>)</tt>
 </p>
@@ -356,13 +353,13 @@ to represent <em>i</em> in a signed twos-complement
 representation.
     
 </p>
-<pre>    (integer-length  0) =&gt; 0
-    (integer-length  1) =&gt; 1
-    (integer-length -1) =&gt; 0
-    (integer-length  7) =&gt; 3
-    (integer-length -7) =&gt; 3
-    (integer-length  8) =&gt; 4
-    (integer-length -8) =&gt; 3
+<pre>    (integer-length  0) => 0
+    (integer-length  1) => 1
+    (integer-length -1) => 0
+    (integer-length  7) => 3
+    (integer-length -7) => 3
+    (integer-length  8) => 4
+    (integer-length -8) => 3
 </pre><p>
 <tt>(bitwise-if </tt><em>mask i j</em><tt>)</tt>
 </p>
@@ -372,7 +369,13 @@ from which string to take each bit. That is, if the <em>k</em>th bit of <em>mask
 is 1, then the <em>k</em>th bit of the result is the <em>k</em>th bit of <em>i</em>, otherwise
 the <em>k</em>th bit of <em>j</em>.  
 </p>
-<h2 id="Single-bitoperations">Single-bit operations</h2>
+<pre>
+    (bitwise-if 3 1 8) => 9
+    (bitwise-if 3 8 1) => 0
+    (bitwise-if 1 1 2) => 3
+    (bitwise-if #b00111100 #b11110000 #b00001111) => #b00110011
+</pre>
+</pre><h2 id="Single-bitoperations">Single-bit operations</h2>
 <p>
 As always, the rightmost/least-significant bit in <em>i</em> is bit 0.
 </p>
@@ -383,12 +386,14 @@ As always, the rightmost/least-significant bit in <em>i</em> is bit 0.
 Is bit <em>index</em> set in bitstring <em>i</em> (where <em>index</em> is a non-negative exact
 integer)?
 </p>
-<pre>    (bit-set? 1 1) =&gt;  false
-    (bit-set? 0 1) =&gt;  true
-    (bit-set? 3 10) =&gt;  true
-    (bit-set? 1000000 -1) =&gt;  true
-    (bit-set? 2 6) =&gt;  true
-    (bit-set? 0 6) =&gt;  false
+<p>Compatibility note: The R6RS analogue <tt>bitwise-bit-set?</tt>
+accepts its arguments in the opposite order.</p>
+<pre>    (bit-set? 1 1) =>  false
+    (bit-set? 0 1) =>  true
+    (bit-set? 3 10) =>  true
+    (bit-set? 1000000 -1) =>  true
+    (bit-set? 2 6) =>  true
+    (bit-set? 0 6) =>  false
 </pre><p>
 <tt>(copy-bit </tt><em>index i boolean</em><tt>)</tt>
 </p>
@@ -396,9 +401,16 @@ integer)?
 Returns an integer the same as <em>i</em> except in the <em>index</em>th bit,
 which is 1 if <em>boolean</em> is <tt>#t</tt> and 0 if <em>boolean</em> is <tt>#f</tt>.
 </p>
-<pre>(copy-bit 0 0 #t) =&gt; #b1
-(copy-bit 2 0 #t) =&gt; #b100
-(copy-bit 2 #b1111 #f) =&gt; #b1011
+<p>Compatibility note: The R6RS analogue <tt>bitwise-copy-bit</tt>
+has a completely different interface.
+<tt>(bitwise-copy-bit </tt><em>dest index source</em><tt>)</tt>
+replaces the <i>index</i>'th bit of <em>dest</em> with the
+<em>index</em>'th bit of <i>source</i>.
+It is equivalent to <tt>(bit-field-replace-same dest source index (+ index 1))</tt>.
+</p>
+<pre>(copy-bit 0 0 #t) => #b1
+(copy-bit 2 0 #t) => #b100
+(copy-bit 2 #b1111 #f) => #b1011
 </pre><p>
 <tt>(bit-swap </tt><em>index<sub>1</sub> index<sub>2</sub> i</em><tt>)</tt>
 </p>
@@ -406,7 +418,7 @@ which is 1 if <em>boolean</em> is <tt>#t</tt> and 0 if <em>boolean</em> is <tt>#
 Returns an integer the same as <em>i</em> except that the <em>index<sub>1</sub></em>th bit
 and the <em>index<sub>2</sub></em>th bit have been exchanged.
 </p>
-<pre>(bit-swap 0 2 4) =&gt; #b1
+<pre>(bit-swap 0 2 4) => #b1
 </pre><p>
 <tt>(any-bit-set? </tt><em>test-bits i</em><tt>)</tt><br />
 <tt>(every-bit-set? </tt><em>test-bits i</em><tt>)</tt>
@@ -416,6 +428,12 @@ Determines if any/all of the bits set in bitstring <em>test-bits</em> are set
 in bitstring <em>i</em>. I.e.,  returns <tt>(not (zero? (bitwise-and </tt><em>test-bits i</em><tt>)))</tt>
 and <tt>(= </tt><em>test-bits</em><tt> (bitwise-and</tt> <em>test-bits i</em>))) respectively.
 </p>
+<pre>
+    (any-bit-set? 3 6) => #t
+    (any-bit-set? 3 12) => #f
+    (every-bit-set? 4 6) => #t
+    (every-bit-set? 7 6) => #f
+</pre>
 <p>
 <tt>(first-set-bit </tt><em>i</em><tt>)</tt>
 </p>
@@ -423,13 +441,13 @@ and <tt>(= </tt><em>test-bits</em><tt> (bitwise-and</tt> <em>test-bits i</em>)))
 Return the index of the first (smallest index) 1 bit in bitstring <em>i</em>.
 Return -1 if <em>i</em> contains no 1 bits (i.e., if <em>i</em> is zero).
 </p>
-<pre>    (first-set-bit 1) =&gt; 0
-    (first-set-bit 2) =&gt; 1
-    (first-set-bit 0) =&gt; -1
-    (first-set-bit 40) =&gt; 3
-    (first-set-bit -28) =&gt; 2
-    (first-set-bit (expt  2 99)) =&gt; 99
-    (first-set-bit (expt -2 99)) =&gt; 99
+<pre>    (first-set-bit 1) => 0
+    (first-set-bit 2) => 1
+    (first-set-bit 0) => -1
+    (first-set-bit 40) => 3
+    (first-set-bit -28) => 2
+    (first-set-bit (expt  2 99)) => 99
+    (first-set-bit (expt -2 99)) => 99
 </pre><h2 id="Bitfieldoperations">Bit field operations</h2>
 <p>
 These functions operate on a contiguous field of bits (a "byte," in
@@ -445,18 +463,38 @@ running from bit <em>start</em> to bit <em>end</em>-1.
 Returns the field from <em>i</em>, shifted
 down to the least-significant position in the result.
 </p>
+<pre>
+   (bit-field #b1101101010 0 4) => #b1010
+   (bit-field #b1101101010 3 9) => #b101101
+   (bit-field #b1101101010 4 9) => #b10110
+   (bit-field #b1101101010 4 10) => #b110110
+   (bit-field 6 0 1) => 0
+   (bit-field 6 1 3) => 3
+   (bit-field 6 2 999) => 1
+   (bit-field #x100000000000000000000000000000000 128 129) => 1
+</pre>
+
 <p>
 <tt>(bit-field-any? </tt><em>i start end</em><tt>)</tt>
 </p>
 <p>
 Returns true if any of the field's bits are set in bitstring <em>i</em>, and false otherwise.
 </p>
+<pre>
+  (any-bit-set? 3 6) => #t
+  (any-bit-set? 3 12) => #f
+</pre>
+
 <p>
 <tt>(bit-field-every? </tt><em>i start end</em><tt>)</tt>
 </p>
 <p>
 Returns false if any of the field's bits are not set in bitstring <em>i</em>, and true otherwise.
 </p>
+<pre>
+  (every-bit-set? 4 6) => #t
+  (every-bit-set? 7 6) => #f
+</pre>
 <p>
 <tt>(bit-field-clear </tt><em>i start end</em><tt>)</tt><br />
 <tt>(bit-field-set </tt><em>i start end</em><tt>)</tt>
@@ -464,20 +502,33 @@ Returns false if any of the field's bits are not set in bitstring <em>i</em>, an
 <p>
 Returns <em>i</em> with the field's bits set to all 0s/1s.
 </p>
+<pre>
+   (bit-field-clear #b101010 1 4) => #b100000
+   (bit-field-set #b101010 1 4) => #b101110
+</pre>
 <p>
-<tt>(bit-field-replace </tt><em>dst src start end</em><tt>)</tt>
+<tt>(bit-field-replace </tt><em>dest source start end</em><tt>)</tt>
 </p>
 <p>
-Returns <em>dst</em> with the field replaced
-by the least-significant <em>end-start</em> bits in <em>src</em>.
+Returns <em>dest</em> with the field replaced
+by the least-significant <em>end-start</em> bits in <em>source</em>.
+</p>
+<pre>
+   (bit-field-replace #b101010 #b010 1 4) => #b100100
+   (bit-field-replace #b110 1 0 1) => #b111
+   (bit-field-replace #b110 1 1 2) => #b110
+</pre>
+
+<p>
+<tt>(bit-field-replace-same </tt><em>dest source start end</em><tt>)</tt>
 </p>
 <p>
-<tt>(bit-field-replace-same </tt><em>dst src start end</em><tt>)</tt>
+Returns <em>dest</em> with its field replaced
+by the corresponding field in <em>source</em>.
 </p>
-<p>
-Returns <em>dst</em> with its field replaced
-by the corresponding field in <em>src</em>.
-</p>
+<pre>
+   (bit-field-replace-same #b1111 #b0000 1 3) => #b1001
+</pre>
 <p>
 <tt>(bit-field-rotate </tt><em>i count start end</em><tt>)</tt>
 </p>
@@ -486,31 +537,83 @@ Returns <em>i</em> with the field cyclically permuted
 by <em>count</em> bits towards high-order.
 </p>
 <p>
+Compatibility note:  The R6RS analogue <tt>bitwise-rotate-bit-field</tt>
+uses the argument ordering <em>i start end count</em>.
+</p>
+</p>
+<pre>
+   (bit-field-rotate #b110 0 0 10) => #b110
+   (bit-field-rotate #b110 0 0 256) => #b110
+   (bit-field-rotate #x100000000000000000000000000000000 1 0 129) => 1
+   (bit-field-rotate #b110 1 1 2) => #b110
+   (bit-field-rotate #b110 1 2 4) => #b1010
+   (bit-field-rotate #b0111 -1 1 4) => #b1011
+</pre>
+
+<p>
 <tt>(bit-field-reverse </tt><em>i start end</em><tt>)</tt>
 </p>
 <p>
 Returns <em>i</em> with the order of the bits in the field reversed.
 </p>
+<pre>
+   (bit-field-reverse 6 1 3) => 6
+   (bit-field-reverse 6 1 4) => 12
+   (bit-field-reverse 1 0 32) => #x80000000
+   (bit-field-reverse 1 0 31) => #x40000000
+   (bit-field-reverse 1 0 30) => #x20000000
+   (bit-field-reverse #x140000000000000000000000000000000 0 129) => 5
+</pre>
+
 <h2 id="Bitsasbooleans">Bits as booleans</h2>
 <p>
-<tt>(integer->list </tt><em>i</em> [ <em>len</em> ]<tt>)</tt><br />
+<tt>(integer->list </tt><em>i</em><tt>)</tt><br />
 <tt>(integer->vector </tt><em>i</em> [ <em>len</em> ]<tt>)</tt>
 </p>
 <p>
 Returns a list/vector of <em>len</em> booleans corresponding to each bit of the non-negative integer <em>i</em>,
-returning bit #0 as the last element, bit #1 as the next to last, and so on.
-<tt>#t</tt> is returned for each 1; <tt>#f</tt> for 0. The <em>len</em> argument defaults to <tt>(integer-length </tt><em>i</em><tt>)</tt>.
+returning bit #0 as the first element, bit #1 as the second, and so on.
+<tt>#t</tt> is returned for each 1; <tt>#f</tt> for 0. 
 </p>
+<p><b>Warning:</b> SLIB and SRFI 60 return the elements in the opposite order.</p>
+<pre>
+   (integer->list #b1110101)) => (#t #f #t #f #t #t #t)
+   (integer->list #b111010 4)) => (#f #t #f #t)
+   (integer->list 3 5)) => (#t #t #f #f #f)
+   (integer->list 6 4)) => (#f #t #t #f)
+
+   (integer->vector #b1110101)) => #(#t #f #t #f #t #t #t)
+   (integer->vector #b111010 4)) => #(#f #t #f #t)
+   (integer->vector 3 5)) => #(#t #t #f #f #f)
+   (integer->vector 6 4)) => #(#f #t #t #f)
+</pre>
+
 <p>
 <tt>(list->integer </tt><em>list</em><tt>)</tt><br />
 <tt>(vector->integer </tt><em>vector</em><tt>)</tt>
 </p>
 <p>
 Returns an integer formed from the booleans in <em>list/vector</em>,
-using the last element as bit #0, the next to last element as bit #1, and so on.
+using the first element as bit #0, the second element as bit #1, and so on.
 It is an error if <em>list/vector</em> contains non-booleans.
 A 1 bit is coded for each <tt>#t</tt>; a 0 bit for <tt>#f</tt>.
 Note that the result is never a negative integer.
+</p>
+<p><b>Warning:</b> SLIB and SRFI 60 return the bits in the opposite order.</p>
+<pre>
+   (list->integer '(#t #f #t #f #t #t #t)) => #b1110101
+   (list->integer '(#f #f #t #f #t #f #t #t #t)) => #b111010100
+   (list->integer '(#f #t #t)) => 6
+   (list->integer '(#f #t #t #f)) => 6
+   (list->integer '(#f #f #t #t)) => 12
+
+   (vector->integer '#(#t #f #t #f #t #t #t)) => #b1110101
+   (vector->integer '#(#f #f #t #f #t #f #t #t #t)) => #b111010100
+   (vector->integer '#(#f #t #t)) => 6
+   (vector->integer '#(#f #t #t #f)) => 6
+   (vector->integer '#(#f #f #t #t)) => 12
+</pre>
+
 </p><p>
 For positive integers,
 <tt>integer->list</tt> and <tt>list->integer</tt> are inverses in the sense of <tt>equal?</tt>,
@@ -521,9 +624,13 @@ and so are <tt>integer->vector</tt> and <tt>vector->integer</tt>.
 </p>
 <p>
 Returns the integer coded by the <tt>bool</tt> arguments.
-The last argument is bit #0, the next to last argument is bit #1, and so on.
+The first argument is bit #0, the second argument is bit #1, and so on.
 Note that the result is never a negative integer.
 </p>
+<pre>
+  (bits #t #f #t #f #t #t #t) => #b1110101
+  (bits #f #f #t #f #t #f #t #t #t) => #b111010100
+</pre>
 <h2 id="Foldunfoldandgenerate">Fold, unfold, and generate</h2>
 <p>
 It is an error if the arguments named <em>proc, stop?, mapper, successor</em>
@@ -534,39 +641,64 @@ The arguments named <em>seed</em> may be any Scheme object.
 <tt>(bitwise-fold </tt><em>proc seed i</em><tt>)</tt>
 </p>
 <p>
-For each bit <em>b</em> of <em>i</em> from bit 0 to <tt>(integer-length </tt><em>i</em><tt>)</tt>, <em>proc</em> is called as
+For each bit <em>b</em> of <em>i</em> from bit #0 to bit <tt>(integer-length </tt><em>i</em><tt>)</tt>,
+<em>proc</em> is called as
 <tt>(</tt><em>proc b r</em><tt>)</tt>, where <em>r</em> is the current accumulated result.  The initial value of <em>r</em>
 is <em>seed</em>, and the value returned by <em>proc</em> becomes the next accumulated result.  When
-all bits are exhausted, the final accumulated result becomes the result of <tt>bitwise-fold</tt>.
+the last bit has been processed, the final accumulated result becomes the result of <tt>bitwise-fold</tt>.
 </p>
+<pre>
+  (bitwise-fold cons '() #b1010111) => (#t #f #t #f #t #t #t)
+</pre>
 <p>
 <tt>(bitwise-for-each </tt><em>proc i</em><tt>)</tt>
 </p>
 <p>
-Repeatedly applies <em>proc</em> to the bits of <em>i</em> starting with 0 and ending with
-<tt>(integer-length </tt><em>i</em><tt>)</tt>.  The values returned by <em>proc</em> are discarded.  Returns
+Repeatedly applies <em>proc</em> to the bits of <em>i</em> starting with 
+bit #0 and ending with bit <tt>(integer-length </tt><em>i</em><tt>)</tt>.
+The values returned by <em>proc</em> are discarded.  Returns
 an unspecified value.
 </p>
+<pre>
+      (let ((count 0))
+        (bitwise-for-each (lambda (b) (if b (set! count (+ count 1))))
+                          #b1010111) => 5
+</pre>
 <p>
 <tt>(bitwise-unfold </tt><em>stop? mapper successor seed</em><tt>)</tt>
 </p>
 <p>
-Generates a non-negative integer bit by bit, starting with bit 0.
-If the result of applying <em>stop?</em> to the current state
-(whose initial value is <em>seed</em>) is true, return the
-currently accumulated bits as an integer.  Otherwise, apply <em>mapper</em>
-to the current state to obtain the next bit of the result by interpreting
-a true value as a 1 bit and a false value as a 0 bit.  Then get a new state
-by applying <em>successor</em> to the current state, and repeat this algorithm.
+Generates a non-negative integer bit by bit, starting with bit 0. If
+the result of applying <i>stop?</i> to the current state (whose initial
+value is <i>seed</i>) is true, return the currently accumulated bits as an
+integer. Otherwise, apply <i>mapper</i> to the current state to obtain the
+next bit of the result by interpreting a true value as a 1 bit and a
+false value as a 0 bit. Then get a new state by applying <i>successor</i> to
+the current state, and repeat this algorithm.
 </p>
+
+<pre>
+  (bitwise-unfold (lambda (i) (= i 10))
+                  even?
+                  (lambda (i) (+ i 1))
+                  0)) => #b101010101
+</pre>
 <p>
-<tt>(make-bitwise-generator </tt><em>i</em><tt>)</tt>
+<tt>(make-bitwise-generator </tt><em>i</em> [ <em>start</em> ]<tt>)</tt>
 </p>
 <p>
 Returns a <a href="http://srfi.schemers.org/srfi-121/srfi-121.html">SRFI 121</a>
 generator that generates all the bits of <em>i</em> starting
-with bit 0.  Note that it is an infinite generator.
+with bit #0.  Note that the generator is infinite.
 </p>
+
+<pre>
+  (let ((g (make-bitwise-generator #b110)))
+    (test #f (g))
+    (test #t (g))
+    (test #t (g))
+    (test #f (g)))
+</pre>
 
 
 <h1>Implementation</h1>
@@ -576,25 +708,32 @@ following files:</p>
 
 <ul><li><tt>bitwise-core.scm</tt> - the SRFI 60 sample implementation
 of the seven core operators, without dependencies
-<li><tt>chibi-core.scm</tt> - core operators not provided by Chibi C library
-<li><tt>chicken-core.scm</tt> - core operators not provided by Chicken
-<li><tt>bitwise-33.scm</tt> - SRFI 33 sample implementation, renamed
-<li><tt>bitwise-60.scm</tt> - part of SRFI 60 sample implementation, renamed
+<li><tt>bitwise-33.scm</tt> - SRFI 33 sample implementation, some procedures renamed
+<li><tt>bitwise-60.scm</tt> - part of SRFI 60 sample implementation, some procedures renamed
 <li><tt>bitwise-other.scm</tt> - implementation of other procedures
 <li><tt>srfi-151.scm</tt> - Chicken module
 <li><tt>srfi-151.sld</tt> - R7RS library
 <li><tt>chibi-test.scm</tt> - Chibi tests
 <li><tt>chicken-test.scm</tt> - Chicken tests
 </ul>
-<p>Note that Chibi provides a C implementation of some of the core operators.
-There is a <tt>cond-expand</tt> in <tt>srfi-151.sld</tt> that takes
-advantage of this; however, it is currently commented out.
+<p>It is very important for performance to provide a C or assembly implementation of the core operators.
+There is a <tt>cond-expand</tt> in <tt>srfi-151.sld</tt> that can be extended to take
+advantage of this.
+Currently it contains options for Chibi and Gauche.
+In addition, if the R6RS library <tt>(rnrs arithmetic bitwise)</tt> is available,
+it will be used in place of <tt>bitwise-core.scm</tt>.</p>
+<p>Temporary note:  Chibi assumes a C library named <tt>bit</tt>.
 The <tt>bit.{so,dll}</tt> file can be found in <tt>$PREFIX/lib/chibi/srfi/{33,142}</tt>.
+Even more temporary note: this is buggy, so the Chibi arm of the conditional is currently commented out.
+</p>
 
 
 <h1 id="Comparisonofproposals">Comparison of proposals</h1>
 <p>
 The following table compares the names of the bitwise (aka logical) functions of Common Lisp, SRFI 33, Olin's revisions, SRFI 60, R6RS, and this SRFI.
+<tt><i>Italic procedure names</i></tt> indicate that the
+equivalence is only rough: argument orderings or precise semantics are not
+the same as in this SRFI.
 </p>
 <table>
 <tr><th>Function</th><th>CL</th><th>SRFI 33</th><th>SRFI 33 late revs</th><th>SRFI 60</th><th>R6RS</th><th>This SRFI
@@ -610,22 +749,22 @@ The following table compares the names of the bitwise (aka logical) functions of
 </td></tr><tr><td>Bitwise OR with NOT of first arg</td><td><tt>logorc1</tt></td><td><tt>bitwise-orc1</tt></td><td><tt>bitwise-orc1</tt></td><td>---</td><td>---</td><td><tt>bitwise-orc1</tt>
 </td></tr><tr><td>Bitwise OR with NOT of second arg</td><td><tt>logorc2</tt></td><td><tt>bitwise-orc2</tt></td><td><tt>bitwise-orc2</tt></td><td>---</td><td>---</td><td><tt>bitwise-orc2</tt>
 </td></tr><tr><td>Arithmetic shift</td><td><tt>ash</tt></td><td><tt>arithmetic-shift</tt></td><td><tt>arithmetic-shift</tt></td><td><tt>ash</tt>, <tt>arithmetic-shift</tt></td><td><tt>bitwise-arithmetic-shift</tt></td><td><tt>arithmetic-shift</tt>
-</td></tr><tr><td>Population count</td><td><tt>logcount</tt></td><td><tt>bit-count</tt></td><td><tt>bit-count</tt></td><td><tt>logcount</tt>, <tt>bit-count</tt></td><td><tt>bitwise-bit-count</tt></td><td><tt>bit-count</tt>
-</td></tr><tr><td>Integer length</td><td><tt>integer-length</tt></td><td><tt>integer-length</tt></td><td><tt>integer-length</tt></td><td><tt>integer-length</tt></td><td><tt>bitwise-integer-length</tt></td><td><tt>integer-length</tt>
-</td></tr><tr><td>Mask selects source of bits</td><td>---</td><td><tt>bitwise-merge</tt></td><td><tt>bitwise-merge</tt></td><td><tt>bitwise-if</tt>, <tt>bitwise-merge</tt></td><td><tt>bitwise-if</tt></td><td><tt>bitwise-if</tt>
-</td></tr><tr><td>Test single bit</td><td><tt>logbitp</tt></td><td><tt>bit-set?</tt></td><td><tt>bit-set?</tt></td><td><tt>logbit?</tt>, <tt>bit-set?</tt></td><td><tt>bitwise-bit-set?</tt></td><td><tt>bit-set?</tt>
+</td></tr><tr><td>Population count</td><td><tt>logcount</tt></td><td><tt>bit-count</tt></td><td><tt>bit-count</tt></td><td><tt>logcount</tt>, <tt>bit-count</tt></td><td><tt><i>bitwise-bit-count</i></tt></td><td><tt>bit-count</tt>
+</td></tr><tr><td>Integer length</td><td><tt>integer-length</tt></td><td><tt>integer-length</tt></td><td><tt>integer-length</tt></td><td><tt>integer-length</tt></td><td><tt>bitwise-length</tt></td><td><tt>integer-length</tt>
+</td></tr><tr><td>Mask selects source of bits</td><td>---</td><td><tt><i>bitwise-merge</i></tt></td><td><tt><i>bitwise-merge</i></tt></td><td><tt>bitwise-if</tt>, <tt>bitwise-merge</tt></td><td><tt>bitwise-if</tt></td><td><tt>bitwise-if</tt>
+</td></tr><tr><td>Test single bit</td><td><tt>logbitp</tt></td><td><tt>bit-set?</tt></td><td><tt>bit-set?</tt></td><td><tt>logbit?</tt>, <tt>bit-set?</tt></td><td><tt><i>bitwise-bit-set?</i></tt></td><td><tt>bit-set?</tt>
 </td></tr><tr><td>See if any mask bits set</td><td><tt>logtest</tt></td><td><tt>any-bits-set?</tt></td><td><tt>any-bit-set?</tt></td><td><tt>logtest</tt>, <tt>any-bit-set?</tt></td><td>---</td><td><tt>any-bit-set</tt>
 </td></tr><tr><td>See if all mask bits set</td><td>---</td><td><tt>all-bits-set?</tt></td><td><tt>every-bit-set?</tt></td><td>---</td><td>---</td><td><tt>every-bit-set?</tt>
-</td></tr><tr><td>Replace single bit</td><td>---</td><td>---</td><td><tt>copy-bit</tt></td><td><tt>copy-bit</tt></td><td>bitwise-copy-bit</td><td><tt>copy-bit</tt>
+</td></tr><tr><td>Replace single bit</td><td>---</td><td>---</td><td><tt>copy-bit</tt></td><td><tt>copy-bit</tt></td><td><tt><i>bitwise-copy-bit</i></tt></td><td><tt>copy-bit</tt>
 </td></tr><tr><td>Swap bits</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td><tt>bit-swap</tt>
-</td></tr><tr><td>Find first bit set</td><td>---</td><td><tt>first-bit-set</tt></td><td><tt>first-set-bit</tt></td><td><tt>log2-binary-factors</tt>, <tt>first-set-bit</tt></td><td>---</td><td><tt>first-set-bit</tt>
-</td></tr><tr><td>Extract bit field</td><td><tt>ldb</tt></td><td><tt>extract-bit-field</tt></td><td><tt>extract-bit-field</tt></td><td><tt>bit-field</tt></td><td><tt>bitwise-bit-field</tt></td><td><tt>bit-field</tt>
-</td></tr><tr><td>Test bit field (any)</td><td><tt>ldb-test</tt></td><td><tt>test-bit-field?</tt></td><td><tt>bit-field-any?</tt></td><td>---</td><td>---</td><td><tt>bit-field-any?</tt>
-</td></tr><tr><td>Test bit field (every)</td><td>---</td><td>---</td><td><tt>bit-field-every?</tt></td><td>---</td><td>---</td><td><tt>bit-field-every?</tt>
-</td></tr><tr><td>Clear bit field</td><td><tt>mask-field</tt></td><td><tt>clear-bit-field</tt></td><td><tt>bit-field-clear</tt></td><td>---</td><td>---</td><td><tt>bit-field-clear</tt>
+</td></tr><tr><td>Find first bit set</td><td>---</td><td><tt>first-set-bit</tt></td><td><tt>first-set-bit</tt></td><td><tt>log2-binary-factors</tt>, <tt>first-set-bit</tt></td><td><tt>bitwise-first-bit-set</tt></td><td><tt>first-set-bit</tt>
+</td></tr><tr><td>Extract bit field</td><td><tt><i>ldb</tt></td><td><tt><i>extract-bit-field</i></tt></td><td><tt><i>extract-bit-field</i></tt></td><td><tt>bit-field</tt></td><td><tt>bitwise-bit-field</tt></td><td><tt>bit-field</tt>
+</td></tr><tr><td>Test bit field (any)</td><td><tt><i>ldb-test</i></tt></td><td><tt><i>test-bit-field?</i></tt></td><td><tt><i>bit-field-any?</i></tt></td><td>---</td><td>---</td><td><tt>bit-field-any?</tt>
+</td></tr><tr><td>Test bit field (every)</td><td>---</td><td>---</td><td><tt><i>bit-field-every?</i></tt></td><td>---</td><td>---</td><td><tt>bit-field-every?</tt>
+</td></tr><tr><td>Clear bit field</td><td><tt><i>mask-field</i></tt></td><td><tt><i>clear-bit-field</i></tt></td><td><tt>bit-field-clear</tt></td><td>---</td><td>---</td><td><tt>bit-field-clear</tt>
 </td></tr><tr><td>Set bit field</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td><tt>bit-field-set</tt>
-</td></tr><tr><td>Replace bit field</td><td><tt>dpb</tt></td><td><tt>replace-bit-field</tt></td><td><tt>bit-field-replace</tt></td><td><tt>copy-bit-field</tt></td><td><tt>bitwise-copy-bit-field</tt></td><td><tt>bit-field-replace</tt>
-</td></tr><tr><td>Replace corresponding bit field</td><td><tt>deposit-field</tt></td><td><tt>deposit-field</tt></td><td><tt>copy-bit-field</tt></td><td>---</td><td>---</td><td><tt>bit-field-copy-same</tt>
+</td></tr><tr><td>Replace bit field</td><td><tt><i>dpb</i></tt></td><td><tt><i>replace-bit-field</i></tt></td><td><tt><i>bit-field-replace</i></tt></td><td><tt>copy-bit-field</tt></td><td><tt>bitwise-copy-bit-field</tt></td><td><tt>bit-field-replace</tt>
+</td></tr><tr><td>Replace corresponding bit field</td><td><tt><i>deposit-field</i></tt></td><td><tt><i>copy-bit-field</i></tt></td><td><tt><i>bit-field-copy</i></tt></td><td>---</td><td>---</td><td><tt>bit-field-replace-same</tt>
 </td></tr><tr><td>Rotate bit field</td><td>---</td><td>---</td><td>---</td><td><tt>rotate-bit-field</tt></td><td><tt>bitwise-rotate-bit-field</tt></td><td><tt>bit-field-rotate</tt>
 </td></tr><tr><td>Reverse bit field</td><td>---</td><td>---</td><td>---</td><td><tt>reverse-bit-field</tt></td><td><tt>bitwise-reverse-bit-field</tt></td><td><tt>bit-field-reverse</tt>
 </td></tr><tr><td>Integer to boolean list</td><td>---</td><td>---</td><td>---</td><td><tt>integer->list</tt></td><td>---</td><td><tt>integer->list</tt>

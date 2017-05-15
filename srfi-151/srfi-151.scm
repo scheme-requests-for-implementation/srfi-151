@@ -1,9 +1,11 @@
 ;;;; chicken implementation of SRFI 151
 (module srfi-151 ()
   (import scheme)
-  (import (only chicken include use case-lambda when
-                        bitwise-and bitwise-ior bitwise-xor
-                        arithmetic-shift))
+  (import (only chicken include use case-lambda when))
+
+  ;; Provides bitwise-not, bitwise-and, butwise-ior, bitwise-xor,
+  ;; arithmetic-shift, integer-length.  The remaining
+  ;; core function, bit-count, is provided in this file.
   (use numbers)
 
   (export bitwise-not bitwise-and bitwise-ior bitwise-xor bitwise-eqv
@@ -17,7 +19,20 @@
   (export integer->list list->integer integer->vector vector->integer bits
           bitwise-fold bitwise-for-each bitwise-unfold make-bitwise-generator)
 
-  (include "chicken-core.scm")
+  (define bit-count
+    (letrec ((logcnt (lambda (n tot)
+                       (if (zero? n)
+                           tot
+                           (logcnt (quotient n 16)
+                                   (+ (vector-ref
+                                       '#(0 1 1 2 1 2 2 3 1 2 2 3 2 3 3 4)
+                                       (modulo n 16))
+                                      tot))))))
+      (lambda (n)
+        (cond ((negative? n) (logcnt (bitwise-not n) 0))
+              ((positive? n) (logcnt n 0))
+              (else 0)))))
+
   (include "bitwise-33.scm")
   (include "bitwise-60.scm")
   (include "bitwise-other.scm")

@@ -51,14 +51,14 @@
   (if (null? len)
       (do ((k k (arithmetic-shift k -1))
            (lst '() (cons (odd? k) lst)))
-          ((<= k 0) lst))
+          ((<= k 0) (reverse lst)))
       (do ((idx (+ -1 (car len)) (+ -1 idx))
            (k k (arithmetic-shift k -1))
            (lst '() (cons (odd? k) lst)))
-          ((negative? idx) lst))))
+          ((negative? idx) (reverse lst)))))
 
 (define (list->integer bools)
-  (do ((bs bools (cdr bs))
+  (do ((bs (reverse bools) (cdr bs))
        (acc 0 (+ acc acc (if (car bs) 1 0))))
       ((null? bs) acc)))
 
