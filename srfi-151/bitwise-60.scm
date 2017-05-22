@@ -47,7 +47,7 @@
       (bitwise-ior to (arithmetic-shift 1 index))
       (bitwise-and to (bitwise-not (arithmetic-shift 1 index)))))
 
-(define (integer->list k . len)
+(define (bits->list k . len)
   (if (null? len)
       (do ((k k (arithmetic-shift k -1))
            (lst '() (cons (odd? k) lst)))
@@ -57,13 +57,13 @@
            (lst '() (cons (odd? k) lst)))
           ((negative? idx) (reverse lst)))))
 
-(define (list->integer bools)
+(define (list->bits bools)
   (do ((bs (reverse bools) (cdr bs))
        (acc 0 (+ acc acc (if (car bs) 1 0))))
       ((null? bs) acc)))
 
 (define (bits . bools)
-  (list->integer bools))
+  (list->bits bools))
 
 (define (bitwise-if mask n0 n1)
   (bitwise-ior (bitwise-and mask n0)

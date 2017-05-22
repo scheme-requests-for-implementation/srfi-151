@@ -1,12 +1,12 @@
 ;;;; bitwise-other - functions not from SRFI 33 or SRFI 60
 ;;; Copyright John Cowan 2017
 
-(define integer->vector
+(define bits->vector
   (case-lambda
-    ((i) (list->vector (integer->list i)))
-    ((i len) (list->vector (integer->list i len)))))
+    ((i) (list->vector (bits->list i)))
+    ((i len) (list->vector (bits->list i len)))))
 
-(define (vector->integer vector) (list->integer (vector->list vector)))
+(define (vector->bits vector) (list->bits (vector->list vector)))
 
 (define (bit-swap n1 n2 i)
   (let ((n1-bit (bit-set? n1 i))

@@ -16,7 +16,7 @@
   (export bit-field bit-field-any? bit-field-every?  bit-field-clear bit-field-set
           bit-field-replace  bit-field-replace-same
           bit-field-rotate bit-field-reverse)
-  (export integer->list list->integer integer->vector vector->integer bits
+  (export bits->list list->bits bits->vector vector->bits bits
           bitwise-fold bitwise-for-each bitwise-unfold make-bitwise-generator)
 
   (define bit-count

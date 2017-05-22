@@ -149,7 +149,10 @@ has been changed to <tt>bit-field-replace-same</tt>.
 SRFI 60 includes six procedures that do not have SRFI 33 equivalents.  They are incorporated into this SRFI as follows:
 </p>
 <ul><li>The names <tt>rotate-bit-field</tt> and <tt>reverse-bit-field</tt> are replaced by <tt>bit-field-rotate</tt> and <tt>bit-field-reverse</tt>, by analogy with Olin's revisions.
-</li></ul><ul><li>The procedures <tt>copy-bit</tt>, <tt>integer->list</tt> and <tt>list->integer</tt> are incorporated into this SRFI with the same names.
+</li></ul><ul><li>The procedure <tt>copy-bit</tt> is incorporated into this SRFI with the same name.
+</li></ul><ul><li>The procedures <tt>integer->list</tt> and <tt>list->integer</tt> 
+are incorporated into this SRFI with the slightly different names <tt>integer->bits</tt> 
+and <tt>bits->integer</tt>, because they are incompatible with SRFI 60.
 </li></ul><ul><li>The procedure <tt>booleans->integer</tt> is a convenient way to specify a bitwise integer: it accepts an arbitrary number of boolean arguments and returns a non-negative integer.  So in this SRFI it has the short name <tt>bits</tt>, roughly analogous to <tt>list</tt>, <tt>string</tt>, and <tt>vector</tt>.
 </li></ul><h2 id="Othersources">Other sources</h2>
 <ul><li><p>The following procedures are inspired by
@@ -157,7 +160,7 @@ SRFI 60 includes six procedures that do not have SRFI 33 equivalents.  They are 
 <tt>bit-swap</tt>,
 <tt>bitwise-fold</tt>, <tt>bitwise-for-each</tt>, <tt>bitwise-unfold</tt>.  </p></li>
 <li><p>The procedure <tt>bit-field-set</tt> is the counterpart of <tt>bit-field-clear</tt>.</p></li>
-<li><p>The procedures <tt>integer->vector</tt> and <tt>vector->integer</tt> are inspired by their list counterparts.</p></li>
+<li><p>The procedures <tt>bits->vector</tt> and <tt>vector->bits</tt> are inspired by their list counterparts.</p></li>
 <li><p>The <tt>make-bitwise-generator</tt> procedure is a generator constructor similar to those
 provided by <a href="http://srfi.schemers.org/srfi/srfi-127.html">SRFI 127</a>.</p></li>
 </ul><h2 id="Argumentorderingandsemantics">Argument ordering and semantics</h2>
@@ -189,10 +192,11 @@ significant, so that <tt>(integer->list 6) => (#f #t #t)</tt>.
 However, the SLIB and SRFI 60 implementation
 processed them from the most significant bit to the least-significant bit,
 so that <tt>(integer->list 6) => (#t #t #f)</tt>.
-This SRFI retains the little-endian order.
+This SRFI retains the little-endian order,
+but renames the procedures to <tt>bits->list</tt> and <tt>list->bits</tt>
+to avoid a silent breaking change from SLIB and SRFI 60.
 The same is true of the closely analogous <tt>integer->vector</tt>, <tt>vector->integer</tt>,
 and <tt>bits</tt> procedures.
-<b>This is a silent breaking change from SLIB and SRFI 60.</b>
 </p>
 
 <h1>Specification</h1>
@@ -205,9 +209,9 @@ bitwise-nand  bitwise-nor
 bitwise-andc1 bitwise-andc2
 bitwise-orc1  bitwise-orc2 
 
-arithmetic-shift bit-count integer-length
+arithmetic-shift bit-count 
+integer-length bitwise-if 
 
-bitwise-if 
 bit-set? copy-bit bit-swap
 any-bit-set? every-bit-set?
 first-set-bit
@@ -217,8 +221,7 @@ bit-field-clear bit-field-set
 bit-field-replace  bit-field-replace-same
 bit-field-rotate bit-field-reverse
 
-integer->list list->integer
-integer->vector vector->integer
+bits->list list->bits bits->vector vector->bits
 bits
 bitwise-fold bitwise-for-each bitwise-unfold
 make-bitwise-generator
@@ -403,11 +406,16 @@ Returns an integer the same as <em>i</em> except in the <em>index</em>th bit,
 which is 1 if <em>boolean</em> is <tt>#t</tt> and 0 if <em>boolean</em> is <tt>#f</tt>.
 </p>
 <p>Compatibility note: The R6RS analogue <tt>bitwise-copy-bit</tt>
+as originally documented
 has a completely different interface.
 <tt>(bitwise-copy-bit </tt><em>dest index source</em><tt>)</tt>
 replaces the <i>index</i>'th bit of <em>dest</em> with the
 <em>index</em>'th bit of <i>source</i>.
-It is equivalent to <tt>(bit-field-replace-same dest source index (+ index 1))</tt>.
+It is equivalent to 
+<tt>(bit-field-replace-same dest source index (+ index 1))</tt>.
+However, an erratum made a silent breaking change to interpret the
+third argument as 0 for a false bit and 1 for a true bit.  Some
+R6RS implementations applied this erratum but others did not.
 </p>
 <pre>(copy-bit 0 0 #t) => #b1
 (copy-bit 2 0 #t) => #b100
@@ -566,32 +574,31 @@ Returns <em>i</em> with the order of the bits in the field reversed.
    (bit-field-reverse #x140000000000000000000000000000000 0 129) => 5
 </pre>
 
-<h2 id="Bitsasbooleans">Bits as booleans</h2>
+<h2 id="Bitsconversion">Bits conversion</h2>
 <p>
-<tt>(integer->list </tt><em>i</em><tt>)</tt><br />
-<tt>(integer->vector </tt><em>i</em> [ <em>len</em> ]<tt>)</tt>
+<tt>(bits->list </tt><em>i</em><tt>)</tt><br />
+<tt>(bits->vector </tt><em>i</em> [ <em>len</em> ]<tt>)</tt>
 </p>
 <p>
 Returns a list/vector of <em>len</em> booleans corresponding to each bit of the non-negative integer <em>i</em>,
 returning bit #0 as the first element, bit #1 as the second, and so on.
 <tt>#t</tt> is returned for each 1; <tt>#f</tt> for 0. 
 </p>
-<p><b>Warning:</b> SLIB and SRFI 60 return the elements in the opposite order.</p>
 <pre>
-   (integer->list #b1110101)) => (#t #f #t #f #t #t #t)
-   (integer->list #b111010 4)) => (#f #t #f #t)
-   (integer->list 3 5)) => (#t #t #f #f #f)
-   (integer->list 6 4)) => (#f #t #t #f)
+   (bits->list #b1110101)) => (#t #f #t #f #t #t #t)
+   (bits->list #b111010 4)) => (#f #t #f #t)
+   (bits->list 3 5)) => (#t #t #f #f #f)
+   (bits->list 6 4)) => (#f #t #t #f)
 
-   (integer->vector #b1110101)) => #(#t #f #t #f #t #t #t)
-   (integer->vector #b111010 4)) => #(#f #t #f #t)
-   (integer->vector 3 5)) => #(#t #t #f #f #f)
-   (integer->vector 6 4)) => #(#f #t #t #f)
+   (bits->vector #b1110101)) => #(#t #f #t #f #t #t #t)
+   (bits->vector #b111010 4)) => #(#f #t #f #t)
+   (bits->vector 3 5)) => #(#t #t #f #f #f)
+   (bits->vector 6 4)) => #(#f #t #t #f)
 </pre>
 
 <p>
-<tt>(list->integer </tt><em>list</em><tt>)</tt><br />
-<tt>(vector->integer </tt><em>vector</em><tt>)</tt>
+<tt>(list->bits </tt><em>list</em><tt>)</tt><br />
+<tt>(vector->bits </tt><em>vector</em><tt>)</tt>
 </p>
 <p>
 Returns an integer formed from the booleans in <em>list/vector</em>,
@@ -600,25 +607,24 @@ It is an error if <em>list/vector</em> contains non-booleans.
 A 1 bit is coded for each <tt>#t</tt>; a 0 bit for <tt>#f</tt>.
 Note that the result is never a negative integer.
 </p>
-<p><b>Warning:</b> SLIB and SRFI 60 return the bits in the opposite order.</p>
 <pre>
-   (list->integer '(#t #f #t #f #t #t #t)) => #b1110101
-   (list->integer '(#f #f #t #f #t #f #t #t #t)) => #b111010100
-   (list->integer '(#f #t #t)) => 6
-   (list->integer '(#f #t #t #f)) => 6
-   (list->integer '(#f #f #t #t)) => 12
+   (list->bits '(#t #f #t #f #t #t #t)) => #b1110101
+   (list->bits '(#f #f #t #f #t #f #t #t #t)) => #b111010100
+   (list->bits '(#f #t #t)) => 6
+   (list->bits '(#f #t #t #f)) => 6
+   (list->bits '(#f #f #t #t)) => 12
 
-   (vector->integer '#(#t #f #t #f #t #t #t)) => #b1110101
-   (vector->integer '#(#f #f #t #f #t #f #t #t #t)) => #b111010100
-   (vector->integer '#(#f #t #t)) => 6
-   (vector->integer '#(#f #t #t #f)) => 6
-   (vector->integer '#(#f #f #t #t)) => 12
+   (vector->bits '#(#t #f #t #f #t #t #t)) => #b1110101
+   (vector->bits '#(#f #f #t #f #t #f #t #t #t)) => #b111010100
+   (vector->bits '#(#f #t #t)) => 6
+   (vector->bits '#(#f #t #t #f)) => 6
+   (vector->bits '#(#f #f #t #t)) => 12
 </pre>
 
 </p><p>
 For positive integers,
-<tt>integer->list</tt> and <tt>list->integer</tt> are inverses in the sense of <tt>equal?</tt>,
-and so are <tt>integer->vector</tt> and <tt>vector->integer</tt>.
+<tt>bits->list</tt> and <tt>list->bits</tt> are inverses in the sense of <tt>equal?</tt>,
+and so are <tt>bits->vector</tt> and <tt>vector->bits</tt>.
 </p>
 <p>
 <tt>(bits </tt><em>bool</em> ...<tt>)</tt>
@@ -768,10 +774,10 @@ the same as in this SRFI.
 </td></tr><tr><td>Replace corresponding bit field</td><td><tt><i>deposit-field</i></tt></td><td><tt><i>copy-bit-field</i></tt></td><td><tt><i>bit-field-copy</i></tt></td><td>---</td><td>---</td><td><tt>bit-field-replace-same</tt>
 </td></tr><tr><td>Rotate bit field</td><td>---</td><td>---</td><td>---</td><td><tt>rotate-bit-field</tt></td><td><tt>bitwise-rotate-bit-field</tt></td><td><tt>bit-field-rotate</tt>
 </td></tr><tr><td>Reverse bit field</td><td>---</td><td>---</td><td>---</td><td><tt>reverse-bit-field</tt></td><td><tt>bitwise-reverse-bit-field</tt></td><td><tt>bit-field-reverse</tt>
-</td></tr><tr><td>Integer to boolean list</td><td>---</td><td>---</td><td>---</td><td><tt>integer->list</tt></td><td>---</td><td><tt>integer->list</tt>
-</td></tr><tr><td>Integer to boolean vector</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td><tt>integer->vector</tt>
-</td></tr><tr><td>Boolean list to integer</td><td>---</td><td>---</td><td>---</td><td><tt>list->integer</tt></td><td>---</td><td><tt>list->integer</tt>
-</td></tr><tr><td>Boolean vector to integer</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td><tt>vector->integer</tt>
+</td></tr><tr><td>Bits to boolean list</td><td>---</td><td>---</td><td>---</td><td><tt>integer->list</tt></td><td>---</td><td><tt>bits->list</tt>
+</td></tr><tr><td>Bits to boolean vector</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td><tt>bits->vector</tt>
+</td></tr><tr><td>Boolean list to bits</td><td>---</td><td>---</td><td>---</td><td><tt>list->integer</tt></td><td>---</td><td><tt>list->bits</tt>
+</td></tr><tr><td>Boolean vector to bits</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td><tt>vector->bits</tt>
 </td></tr><tr><td>Booleans to integer</td><td>---</td><td>---</td><td>---</td><td><tt>booleans->integer</tt></td><td>---</td><td><tt>bits</tt>
 </td></tr><tr><td>Bitwise fold</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td><tt>bitwise-fold</tt>
 </td></tr><tr><td>Bitwise for-each</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td><tt>bitwise-for-each</tt>
