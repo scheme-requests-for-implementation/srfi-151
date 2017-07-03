@@ -645,7 +645,7 @@ The arguments named <em>seed</em> may be any Scheme object.
 <tt>(bitwise-fold </tt><em>proc seed i</em><tt>)</tt>
 </p>
 <p>
-For each bit <em>b</em> of <em>i</em> from bit # (inclusive) to bit <tt>(integer-length </tt><em>i</em><tt>)</tt>
+For each bit <em>b</em> of <em>i</em> from bit #0 (inclusive) to bit <tt>(integer-length </tt><em>i</em><tt>)</tt>
 (exclusive), <em>proc</em> is called as
 <tt>(</tt><em>proc b r</em><tt>)</tt>, where <em>r</em> is the current accumulated result.  The initial value of <em>r</em>
 is <em>seed</em>, and the value returned by <em>proc</em> becomes the next accumulated result.  When
