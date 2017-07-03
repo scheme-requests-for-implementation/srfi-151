@@ -587,14 +587,10 @@ returning bit #0 as the first element, bit #1 as the second, and so on.
 </p>
 <pre>
    (bits->list #b1110101)) => (#t #f #t #f #t #t #t)
-   (bits->list #b111010 4)) => (#f #t #f #t)
    (bits->list 3 5)) => (#t #t #f #f #f)
    (bits->list 6 4)) => (#f #t #t #f)
 
    (bits->vector #b1110101)) => #(#t #f #t #f #t #t #t)
-   (bits->vector #b111010 4)) => #(#f #t #f #t)
-   (bits->vector 3 5)) => #(#t #t #f #f #f)
-   (bits->vector 6 4)) => #(#f #t #t #f)
 </pre>
 
 <p>
@@ -649,8 +645,8 @@ The arguments named <em>seed</em> may be any Scheme object.
 <tt>(bitwise-fold </tt><em>proc seed i</em><tt>)</tt>
 </p>
 <p>
-For each bit <em>b</em> of <em>i</em> from bit #0 to bit <tt>(integer-length </tt><em>i</em><tt>)</tt>,
-<em>proc</em> is called as
+For each bit <em>b</em> of <em>i</em> from bit # (inclusive) to bit <tt>(integer-length </tt><em>i</em><tt>)</tt>
+(exclusive), <em>proc</em> is called as
 <tt>(</tt><em>proc b r</em><tt>)</tt>, where <em>r</em> is the current accumulated result.  The initial value of <em>r</em>
 is <em>seed</em>, and the value returned by <em>proc</em> becomes the next accumulated result.  When
 the last bit has been processed, the final accumulated result becomes the result of <tt>bitwise-fold</tt>.
@@ -663,14 +659,15 @@ the last bit has been processed, the final accumulated result becomes the result
 </p>
 <p>
 Repeatedly applies <em>proc</em> to the bits of <em>i</em> starting with 
-bit #0 and ending with bit <tt>(integer-length </tt><em>i</em><tt>)</tt>.
+bit #0 (inclusive) and ending with bit <tt>(integer-length </tt><em>i</em><tt>)</tt> (exclusive).
 The values returned by <em>proc</em> are discarded.  Returns
 an unspecified value.
 </p>
 <pre>
       (let ((count 0))
         (bitwise-for-each (lambda (b) (if b (set! count (+ count 1))))
-                          #b1010111) => 5
+                          #b1010111)
+       count)
 </pre>
 <p>
 <tt>(bitwise-unfold </tt><em>stop? mapper successor seed</em><tt>)</tt>
@@ -692,7 +689,7 @@ the current state, and repeat this algorithm.
                   0)) => #b101010101
 </pre>
 <p>
-<tt>(make-bitwise-generator </tt><em>i</em> [ <em>start</em> ]<tt>)</tt>
+<tt>(make-bitwise-generator </tt><em>i</em><tt>)</tt>
 </p>
 <p>
 Returns a <a href="http://srfi.schemers.org/srfi-121/srfi-121.html">SRFI 121</a>
