@@ -383,7 +383,7 @@ the <em>k</em>th bit of <em>j</em>.
     (bitwise-if 1 1 2) => 3
     (bitwise-if #b00111100 #b11110000 #b00001111) => #b00110011
 </pre>
-</pre><h2 id="Single-bitoperations">Single-bit operations</h2>
+<h2 id="Single-bitoperations">Single-bit operations</h2>
 <p>
 As always, the rightmost/least-significant bit in <em>i</em> is bit 0.
 </p>
@@ -553,7 +553,6 @@ by <em>count</em> bits towards high-order.
 Compatibility note:  The R6RS analogue <tt>bitwise-rotate-bit-field</tt>
 uses the argument ordering <em>i start end count</em>.
 </p>
-</p>
 <pre>
    (bit-field-rotate #b110 0 0 10) => #b110
    (bit-field-rotate #b110 0 0 256) => #b110
@@ -621,7 +620,7 @@ Note that the result is never a negative integer.
    (vector->bits '#(#f #f #t #t)) => 12
 </pre>
 
-</p><p>
+<p>
 For positive integers,
 <tt>bits->list</tt> and <tt>list->bits</tt> are inverses in the sense of <tt>equal?</tt>,
 and so are <tt>bits->vector</tt> and <tt>vector->bits</tt>.
@@ -766,7 +765,7 @@ the same as in this SRFI.
 </td></tr><tr><td>Replace single bit</td><td>---</td><td>---</td><td><tt>copy-bit</tt></td><td><tt>copy-bit</tt></td><td><tt><i>bitwise-copy-bit</i></tt></td><td><tt>copy-bit</tt>
 </td></tr><tr><td>Swap bits</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td><tt>bit-swap</tt>
 </td></tr><tr><td>Find first bit set</td><td>---</td><td><tt>first-set-bit</tt></td><td><tt>first-set-bit</tt></td><td><tt>log2-binary-factors</tt>, <tt>first-set-bit</tt></td><td><tt>bitwise-first-bit-set</tt></td><td><tt>first-set-bit</tt>
-</td></tr><tr><td>Extract bit field</td><td><tt><i>ldb</tt></td><td><tt><i>extract-bit-field</i></tt></td><td><tt><i>extract-bit-field</i></tt></td><td><tt>bit-field</tt></td><td><tt>bitwise-bit-field</tt></td><td><tt>bit-field</tt>
+</td></tr><tr><td>Extract bit field</td><td><i>ldb</i></td><td><tt><i>extract-bit-field</i></tt></td><td><tt><i>extract-bit-field</i></tt></td><td><tt>bit-field</tt></td><td><tt>bitwise-bit-field</tt></td><td><tt>bit-field</tt>
 </td></tr><tr><td>Test bit field (any)</td><td><tt><i>ldb-test</i></tt></td><td><tt><i>test-bit-field?</i></tt></td><td><tt><i>bit-field-any?</i></tt></td><td>---</td><td>---</td><td><tt>bit-field-any?</tt>
 </td></tr><tr><td>Test bit field (every)</td><td>---</td><td>---</td><td><tt><i>bit-field-every?</i></tt></td><td>---</td><td>---</td><td><tt>bit-field-every?</tt>
 </td></tr><tr><td>Clear bit field</td><td><tt><i>mask-field</i></tt></td><td><tt><i>clear-bit-field</i></tt></td><td><tt>bit-field-clear</tt></td><td>---</td><td>---</td><td><tt>bit-field-clear</tt>
