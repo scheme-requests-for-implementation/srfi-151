@@ -66,10 +66,14 @@ and generating approximate seed values for root-finders
 and transcendental function algorithms.
 </p>
 <p>
-This SRFI differs from SRFI 142 in only one way:
-the <tt>bitwise-if</tt> function has the argument ordering of
-SLIB, SRFI 60, and R6RS rather than the ordering of SRFI 33.</p>
-</p>
+This SRFI differs from SRFI 142 in only two ways:
+<ol><li><p>The <tt>bitwise-if</tt> function has the argument ordering of
+SLIB, SRFI 60, and R6RS rather than the ordering of SRFI 33.</p></li>
+<li><p>The order in which bits are processed by the procedures listed in the
+<a href="#Bitsconversion">"Bits conversion" section</a> has been clarified
+and some of the procedures names changed.
+See <a href="#Bitprocessingorder">"Bit processing order"</a> for details.
+</p></li></ol>
 
 <h1>Issues</h1>
 
@@ -185,7 +189,7 @@ under both names, using the SLIB ordering.  SRFI 142 adopted the SRFI 33 orderin
 than the SLIB and R6RS ordering.  Since SLIB and R6RS have seen far more usage than
 SRFI 33, this SRFI adopts the SRFI 60 ordering instead.
 </li></ul>
-<h2>Bit processing order</h2>
+<h2 id="Bitprocessingorder">Bit processing order</h2>
 <p>In SLIB and SRFI 60, the the order in which bits were processed by <tt>integer->list</tt> and
 <tt>list->integer</tt> was not clearly specified.
 When SRFI 142 was written,
@@ -578,7 +582,7 @@ Returns <em>i</em> with the order of the bits in the field reversed.
 
 <h2 id="Bitsconversion">Bits conversion</h2>
 <p>
-<tt>(bits->list </tt><em>i</em><tt>)</tt><br />
+<tt>(bits->list </tt><em>i</em> [ <em>len</em> ]<tt>)</tt><br />
 <tt>(bits->vector </tt><em>i</em> [ <em>len</em> ]<tt>)</tt>
 </p>
 <p>
@@ -769,9 +773,9 @@ the same as in this SRFI.
 </td></tr><tr><td>Test bit field (every)</td><td>---</td><td>---</td><td><tt><i>bit-field-every?</i></tt></td><td>---</td><td>---</td><td><tt>bit-field-every?</tt>
 </td></tr><tr><td>Clear bit field</td><td><tt><i>mask-field</i></tt></td><td><tt><i>clear-bit-field</i></tt></td><td><tt>bit-field-clear</tt></td><td>---</td><td>---</td><td><tt>bit-field-clear</tt>
 </td></tr><tr><td>Set bit field</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td><tt>bit-field-set</tt>
-</td></tr><tr><td>Replace bit field</td><td><tt><i>dpb</i></tt></td><td><tt><i>replace-bit-field</i></tt></td><td><tt><i>bit-field-replace</i></tt></td><td><tt>copy-bit-field</tt></td><td><tt>bitwise-copy-bit-field</tt></td><td><tt>bit-field-replace</tt>
+</td></tr><tr><td>Replace bit field</td><td><tt><i>dpb</i></tt></td><td><tt><i>replace-bit-field</i></tt></td><td><tt><i>bit-field-replace</i></tt></td><td><tt>copy-bit-field</tt></td><td><tt><i>bitwise-copy-bit-field</i></tt></td><td><tt>bit-field-replace</tt>
 </td></tr><tr><td>Replace corresponding bit field</td><td><tt><i>deposit-field</i></tt></td><td><tt><i>copy-bit-field</i></tt></td><td><tt><i>bit-field-copy</i></tt></td><td>---</td><td>---</td><td><tt>bit-field-replace-same</tt>
-</td></tr><tr><td>Rotate bit field</td><td>---</td><td>---</td><td>---</td><td><tt>rotate-bit-field</tt></td><td><tt>bitwise-rotate-bit-field</tt></td><td><tt>bit-field-rotate</tt>
+</td></tr><tr><td>Rotate bit field</td><td>---</td><td>---</td><td>---</td><td><tt>rotate-bit-field</tt></td><td><tt><i>bitwise-rotate-bit-field</i></tt></td><td><tt>bit-field-rotate</tt>
 </td></tr><tr><td>Reverse bit field</td><td>---</td><td>---</td><td>---</td><td><tt>reverse-bit-field</tt></td><td><tt>bitwise-reverse-bit-field</tt></td><td><tt>bit-field-reverse</tt>
 </td></tr><tr><td>Bits to boolean list</td><td>---</td><td>---</td><td>---</td><td><tt>integer->list</tt></td><td>---</td><td><tt>bits->list</tt>
 </td></tr><tr><td>Bits to boolean vector</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td><tt>bits->vector</tt>
