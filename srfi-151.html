@@ -497,8 +497,8 @@ down to the least-significant position in the result.
 Returns true if any of the field's bits are set in bitstring <em>i</em>, and false otherwise.
 </p>
 <pre>
-  (bit-field-any? 3 6) => #t
-  (bit-field-any? 3 12) => #f
+  (bit-field-any? #b1001001 1 6) => #t
+  (bit-field-any? #b1000001 1 6) => #f
 </pre>
 
 <p>
@@ -508,8 +508,8 @@ Returns true if any of the field's bits are set in bitstring <em>i</em>, and fal
   Returns false if any of the field's bits are not set in bitstring <em>i</em>, and true otherwise.
 </p>
 <pre>
-  (bit-field-every? 4 6) => #t
-  (bit-field-every? 7 6) => #f
+  (bit-field-every? #b1011110 1 5) => #t
+  (bit-field-every? #b1011010 1 5) => #f
 </pre>
 <p>
 <tt>(bit-field-clear </tt><em>i start end</em><tt>)</tt><br />
