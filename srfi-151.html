@@ -29,6 +29,9 @@ John Cowan
   <li>Draft #4 published: 2017/7/2</li>
   <li>Draft #5 published: 2017/7/10</li>
   <li>Finalized: 2017/7/10</li>
+  <li>Revised to fix errata:
+    <ul>
+      <li>2017/7/25 (Fixed examples under <code>bit-field-any?</code> and <code>bit-field-every?</code>.  Removed obsolete test.)</li></ul></li>
 </ul>
 
 <h1>Abstract</h1>
@@ -494,19 +497,19 @@ down to the least-significant position in the result.
 Returns true if any of the field's bits are set in bitstring <em>i</em>, and false otherwise.
 </p>
 <pre>
-  (any-bit-set? 3 6) => #t
-  (any-bit-set? 3 12) => #f
+  (bit-field-any? 3 6) => #t
+  (bit-field-any? 3 12) => #f
 </pre>
 
 <p>
 <tt>(bit-field-every? </tt><em>i start end</em><tt>)</tt>
 </p>
 <p>
-Returns false if any of the field's bits are not set in bitstring <em>i</em>, and true otherwise.
+  Returns false if any of the field's bits are not set in bitstring <em>i</em>, and true otherwise.
 </p>
 <pre>
-  (every-bit-set? 4 6) => #t
-  (every-bit-set? 7 6) => #f
+  (bit-field-every? 4 6) => #t
+  (bit-field-every? 7 6) => #f
 </pre>
 <p>
 <tt>(bit-field-clear </tt><em>i start end</em><tt>)</tt><br />
