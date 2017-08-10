@@ -2,13 +2,15 @@
 
 ** by John Cowan
 
-This repository hosts [[http://srfi.schemers.org/srfi-151/][SRFI 151]]: Bitwise Operations, a [[http://srfi.schemers.org/][Scheme Request for Implementation]].
+This repository hosts [[https://srfi.schemers.org/srfi-151/][SRFI 151]]: Bitwise Operations, a [[https://srfi.schemers.org/][Scheme Request for Implementation]].
 
 This SRFI is in /final/ status.
 
-The full documentation for this SRFI can be found in the [[http://srfi.schemers.org/srfi-151/srfi-151.html][SRFI Document]].
+It is intended to replace [[https://srfi.schemers.org/srfi-142/][SRFI 142]].
 
-If you'd like to participate in the discussion of this SRFI, or report issues with it, please [[http://srfi.schemers.org/srfi-151/][join the SRFI-151 mailing list]] and send your message there.
+The full documentation for this SRFI can be found in the [[https://srfi.schemers.org/srfi-151/srfi-151.html][SRFI Document]].
+
+If you'd like to participate in the discussion of this SRFI, or report issues with it, please [[shttp://srfi.schemers.org/srfi-151/][join the SRFI-151 mailing list]] and send your message there.
 
 Thank you.
 
