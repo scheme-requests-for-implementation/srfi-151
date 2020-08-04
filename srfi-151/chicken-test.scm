@@ -1,4 +1,4 @@
-(use numbers) (use srfi-151) (use test)
+(import (chicken bitwise)) (import srfi-151) (import test)
 (current-test-verbosity #f)
 (test-group "bitwise"
  (test-group "bitwise/basic"
