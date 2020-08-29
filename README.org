@@ -4,7 +4,7 @@
 
 
 
-keywords: [[https://srfi.schemers.org/?keywords=data-structure][Data Structure]], [[https://srfi.schemers.org/?keywords=r7rs-large][R7RS Large]], [[https://srfi.schemers.org/?keywords=r7rs-large-tangerine][R7RS Large: Tangerine Edition]], [[https://srfi.schemers.org/?keywords=numeric][Numeric]]
+keywords: [[https://srfi.schemers.org/?keywords=data-structure][Data Structure]], [[https://srfi.schemers.org/?keywords=r7rs-large][R7RS Large]], [[https://srfi.schemers.org/?keywords=r7rs-large-tangerine][R7RS Large: Tangerine Edition]], [[https://srfi.schemers.org/?keywords=numbers][Numbers]]
 
 This repository hosts [[https://srfi.schemers.org/srfi-151/][SRFI 151]]: Bitwise Operations, a [[https://srfi.schemers.org/][Scheme Request for Implementation]].
 
