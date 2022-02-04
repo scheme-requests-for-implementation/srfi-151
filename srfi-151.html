@@ -594,11 +594,11 @@ returning bit #0 as the first element, bit #1 as the second, and so on.
 <tt>#t</tt> is returned for each 1; <tt>#f</tt> for 0. 
 </p>
 <pre>
-   (bits->list #b1110101)) => (#t #f #t #f #t #t #t)
-   (bits->list 3 5)) => (#t #t #f #f #f)
-   (bits->list 6 4)) => (#f #t #t #f)
+   (bits->list #b1110101) => (#t #f #t #f #t #t #t)
+   (bits->list 3 5) => (#t #t #f #f #f)
+   (bits->list 6 4) => (#f #t #t #f)
 
-   (bits->vector #b1110101)) => #(#t #f #t #f #t #t #t)
+   (bits->vector #b1110101) => #(#t #f #t #f #t #t #t)
 </pre>
 
 <p>
@@ -675,7 +675,7 @@ an unspecified value.
       (let ((count 0))
         (bitwise-for-each (lambda (b) (if b (set! count (+ count 1))))
                           #b1010111)
-       count)
+        count)
 </pre>
 <p>
 <tt>(bitwise-unfold </tt><em>stop? mapper successor seed</em><tt>)</tt>
@@ -694,7 +694,7 @@ the current state, and repeat this algorithm.
   (bitwise-unfold (lambda (i) (= i 10))
                   even?
                   (lambda (i) (+ i 1))
-                  0)) => #b101010101
+                  0) => #b101010101
 </pre>
 <p>
 <tt>(make-bitwise-generator </tt><em>i</em><tt>)</tt>
