@@ -88,10 +88,13 @@ See <a href="#Bitprocessingorder">"Bit processing order"</a> for details.
 
 <h2 id="Generaldesignprinciples">General design principles</h2>
 <ul><li>These operations interpret exact integers using two's-complement representation.
-</li></ul><ul><li>The associative bitwise ops are required to be n-ary. Programmers can reliably write <tt>bitwise-and</tt> with 3 arguments, for example.
-</li></ul><ul><li>The word <tt>or</tt> is never used by itself, only with modifiers: <tt>xor</tt>, <tt>ior</tt>, <tt>nor</tt>,
+</li>
+<li>The associative bitwise ops are required to be n-ary. Programmers can reliably write <tt>bitwise-and</tt> with 3 arguments, for example.
+</li>
+<li>The word <tt>or</tt> is never used by itself, only with modifiers: <tt>xor</tt>, <tt>ior</tt>, <tt>nor</tt>,
 <tt>orc1</tt>, or <tt>orc2</tt>.  This is the same rule as Common Lisp.
-</li></ul><ul><li>Extra and redundant functions such as <tt>bitwise-count</tt>, <tt>bitwise-nor</tt> 
+</li>
+<li>Extra and redundant functions such as <tt>bitwise-count</tt>, <tt>bitwise-nor</tt>
 and the bit-field ops have been included.  Settling on a standard
 choice of names makes it easier to read
 code that uses these sorts of operations. It also means computations
@@ -100,12 +103,15 @@ synthesized with a snarled mess of <tt>bitwise-and</tt>s, <tt>bitwise-or</tt>s, 
 What we gain is having an agreed-upon set of names by which we can refer
 to these functions. If you believe in "small is beautiful," then what is your motivation
 for including anything beyond <tt>bitwise-nand</tt>?
-</li></ul><ul><li>Programmers don't have to re-implement the redundant functions, and stumble
+</li>
+<li>Programmers don't have to re-implement the redundant functions, and stumble
 over the boundary cases and error checking, but can express
 themselves using a full palette of building blocks.
-</li></ul><ul><li>Compilers can directly implement many of these ops for great efficiency gains
+</li>
+<li>Compilers can directly implement many of these ops for great efficiency gains
 without requiring any tricky analysis.
-</li></ul><ul><li>Logical right or left shift operations are excluded 
+</li>
+<li>Logical right or left shift operations are excluded
 because they are not well defined on general integers; they are only defined
 on integers in some finite range. Remember that, in this library, integers
 are interpreted as semi-infinite bit strings that have only a finite
@@ -121,38 +127,34 @@ The core of this  design mirrors the structure of Common Lisp's pretty closely. 
 </p>
 <ul><li>"load" and "deposit" are the wrong verbs (e.g., Common Lisp's <tt>ldb</tt> and <tt>dpb</tt> ops),
 since they have nothing to do with the store.  
-</li></ul><p>
-    
-</p>
-<ul><li><tt>boole</tt> has been removed; it is not one with the Way of Scheme.  Boolean functions
+</li>
+<li><tt>boole</tt> has been removed; it is not one with the Way of Scheme.  Boolean functions
 are directly encoded in Scheme as first-class functions.
-</li></ul><p>
-    
-</p>
-<ul><li>The name choices are more in tune with Scheme conventions (hyphenation,
+</li>
+<li>The name choices are more in tune with Scheme conventions (hyphenation,
 using <tt>?</tt> to mark a predicate, etc.). Common Lisp's name choices were more
 historically motivated, for reasons of backward compatibility with
 Maclisp and Zetalisp.
-</li></ul><p>
-    
-</p>
-<ul><li>The prefix <tt>log</tt> has been changed to <tt>bitwise-</tt> (e.g, <tt>lognot</tt> to <tt>bitwise-not</tt>),
+</li>
+<li>The prefix <tt>log</tt> has been changed to <tt>bitwise-</tt> (e.g, <tt>lognot</tt> to <tt>bitwise-not</tt>),
 as the prefix <tt>bitwise-</tt> more accurately reflects what they do.
-</li></ul><p>
-    
-</p>
-<ul><li>The six trivial binary boolean ops that return constants, the left or right arguments,
+</li>
+<li>The six trivial binary boolean ops that return constants, the left or right arguments,
 and the <tt>bitwise-not</tt> of the left or right arguments, do not appear in this SRFI.
 </li></ul><h2 id="SRFI33">SRFI 33</h2>
 <p>
 This SRFI contains all the procedures of SRFI 33, and retains their original names with these exceptions:
 </p>
 <ul><li>The name <tt>bitwise-merge</tt> is replaced by <tt>bitwise-if</tt>, the name used in SRFI 60 and R6RS.
-</li></ul><ul><li>The name <tt>extract-bit-field</tt> (<tt>bit-field-extract</tt> in Olin's revisions) is replaced by <tt>bit-field</tt>, the name used in SRFI 60 and R6RS.
-</li></ul><ul><li>The names <tt>any-bits-set?</tt> and <tt>all-bits-set?</tt> are replaced by <tt>any-bit-set?</tt> and <tt>every-bit-set?</tt>, in accordance with Olin's revisions.
-</li></ul><ul><li>The name <tt>test-bit-field?</tt> has been renamed <tt>bit-field-any?</tt> and supplemented with
+</li>
+<li>The name <tt>extract-bit-field</tt> (<tt>bit-field-extract</tt> in Olin's revisions) is replaced by <tt>bit-field</tt>, the name used in SRFI 60 and R6RS.
+</li>
+<li>The names <tt>any-bits-set?</tt> and <tt>all-bits-set?</tt> are replaced by <tt>any-bit-set?</tt> and <tt>every-bit-set?</tt>, in accordance with Olin's revisions.
+</li>
+<li>The name <tt>test-bit-field?</tt> has been renamed <tt>bit-field-any?</tt> and supplemented with
 <tt>bit-field-every?</tt>, in accordance with Olin's revisions.
-</li></ul><ul><li>Because  <tt>copy-bit-field</tt> means different things in SRFI 33 and SRFI 60,
+</li>
+<li>Because  <tt>copy-bit-field</tt> means different things in SRFI 33 and SRFI 60,
 SRFI 33's name <tt>copy-bit-field</tt> (<tt>bit-field-copy</tt> in Olin's revisions)
 has been changed to <tt>bit-field-replace-same</tt>.
 </li></ul><h2 id="SRFI60">SRFI 60</h2>
@@ -160,11 +162,14 @@ has been changed to <tt>bit-field-replace-same</tt>.
 SRFI 60 includes six procedures that do not have SRFI 33 equivalents.  They are incorporated into this SRFI as follows:
 </p>
 <ul><li>The names <tt>rotate-bit-field</tt> and <tt>reverse-bit-field</tt> are replaced by <tt>bit-field-rotate</tt> and <tt>bit-field-reverse</tt>, by analogy with Olin's revisions.
-</li></ul><ul><li>The procedure <tt>copy-bit</tt> is incorporated into this SRFI with the same name.
-</li></ul><ul><li>The procedures <tt>integer-&gt;list</tt> and <tt>list-&gt;integer</tt>
+</li>
+<li>The procedure <tt>copy-bit</tt> is incorporated into this SRFI with the same name.
+</li>
+<li>The procedures <tt>integer-&gt;list</tt> and <tt>list-&gt;integer</tt>
 are incorporated into this SRFI with the slightly different names <tt>integer-&gt;bits</tt>
 and <tt>bits-&gt;integer</tt> because they are incompatible with SRFI 60.
-</li></ul><ul><li>The procedure <tt>booleans-&gt;integer</tt> is a convenient way to specify a bitwise integer: it accepts an arbitrary number of boolean arguments and returns a non-negative integer.  So in this SRFI it has the short name <tt>bits</tt>, roughly analogous to <tt>list</tt>, <tt>string</tt>, and <tt>vector</tt>.
+</li>
+<li>The procedure <tt>booleans-&gt;integer</tt> is a convenient way to specify a bitwise integer: it accepts an arbitrary number of boolean arguments and returns a non-negative integer.  So in this SRFI it has the short name <tt>bits</tt>, roughly analogous to <tt>list</tt>, <tt>string</tt>, and <tt>vector</tt>.
 </li></ul><h2 id="Othersources">Other sources</h2>
 <ul><li><p>The following procedures are inspired by
 <a href="https://srfi.schemers.org/srfi-133/srfi-133.html">SRFI 133</a>:
@@ -175,20 +180,23 @@ and <tt>bits-&gt;integer</tt> because they are incompatible with SRFI 60.
 <li><p>The <tt>make-bitwise-generator</tt> procedure is a generator constructor similar to those
 provided by <a href="https://srfi.schemers.org/srfi/srfi-127.html">SRFI 127</a>.</p></li>
 </ul><h2 id="Argumentorderingandsemantics">Argument ordering and semantics</h2>
-<ul><li>In general, these procedures place the bitstring arguments to be operated on first.
+<p>In general, these procedures place the bitstring arguments to be operated on first.
 Where the operation is not commutative, the "destination" argument that provides
 the background bits to be operated on is placed before the "source" argument that provides
 the bits to be transferred to it.
-</li></ul><ul><li>In SRFI 33, <tt>bitwise-nand</tt> and <tt>bitwise-nor</tt> accepted an arbitrary number of arguments
+</p>
+<ul><li>In SRFI 33, <tt>bitwise-nand</tt> and <tt>bitwise-nor</tt> accepted an arbitrary number of arguments
 even though they are not commutative.  Olin's late revisions made them dyadic, and so
 does this SRFI.
-</li></ul><ul><li>Common Lisp bit-field operations use a <em>byte spec</em> to encapsulate the position and
+</li>
+<li>Common Lisp bit-field operations use a <em>byte spec</em> to encapsulate the position and
 size of the field.  SRFI 33 bit-field operations had leading <em>position</em> and <em>size</em>
 arguments instead.  These
 have been replaced in this SRFI by trailing <em>start</em> (inclusive) and <em>end</em> (exclusive)
 arguments, the convention used not only in SRFI 60 and R6RS but also in most other
 subsequence operations in Scheme standards and SRFIs.
-</li></ul><ul><li>In SRFI 60, the <tt>bitwise-if</tt> function was defined
+</li>
+<li>In SRFI 60, the <tt>bitwise-if</tt> function was defined
 with a different argument ordering from SRFI 33's <tt>bitwise-merge</tt>, but was provided
 under both names, using the SLIB ordering.  SRFI 142 adopted the SRFI 33 ordering rather
 than the SLIB and R6RS ordering.  Since SLIB and R6RS have seen far more usage than
