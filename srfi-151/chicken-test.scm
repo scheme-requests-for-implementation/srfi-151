@@ -1,3 +1,7 @@
+;;; SPDX-FileCopyrightText: 2017 John Cowan <cowan@ccil.org>
+;;;
+;;; SPDX-License-Identifier: MIT
+
 (import (chicken bitwise)) (import srfi-151) (import test)
 (current-test-verbosity #f)
 (test-group "bitwise"

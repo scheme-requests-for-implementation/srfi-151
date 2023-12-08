@@ -1,5 +1,10 @@
 ;;;; bitwise-33 - Olin Shivers's code from SRFI-33 with modified names
 
+;;;
+;;; SPDX-FileCopyrightText: Olin Shivers
+;;;
+;;; SPDX-License-Identifier: LicenseRef-Public-Domain
+;;;
 ;;; Olin Shivers is the sole author of this code, and he has placed it in
 ;;; the public domain.
 ;;; 

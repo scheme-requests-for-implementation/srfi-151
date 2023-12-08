@@ -1,4 +1,7 @@
 ;;;; bitwise-core, core bitwise operations
+;;;
+;;; SPDX-License-Identifier: LicenseRef-SLIB
+;;;
 ;;; Copyright (C) 1991, 1993, 2001, 2003, 2005 Aubrey Jaffer
 ;;; This implementation of the seven core functions required by SRFI 33
 ;;; (bitwise-not, bitwise-and, bitwise-ior, bitwise-xor, arithmetic-shift,

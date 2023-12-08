@@ -1,4 +1,7 @@
 ;;;; bitwise-60 - SRFI-60 procedures without SRFI-33 analogues, renamed
+;;;
+;;; SPDX-License-Identifier: LicenseRef-SLIB
+;;;
 ;;; Copyright (C) 1991, 1993, 2001, 2003, 2005 Aubrey Jaffer
 ;
 ;Permission to copy this software, to modify it, to redistribute it,

@@ -1,3 +1,7 @@
+;;; SPDX-FileCopyrightText: 2017 John Cowan <cowan@ccil.org>
+;;;
+;;; SPDX-License-Identifier: MIT
+
 (import (scheme base) (srfi-151) (chibi test))
 (current-test-verbosity #f)
 (test-group "bitwise"
