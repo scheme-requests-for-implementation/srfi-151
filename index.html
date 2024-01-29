@@ -1,126 +1,33 @@
-<!--
-SPDX-FileCopyrightText: 2015 - 2021 Arthur A. Gleckler <srfi@speechcode.com>
-
-SPDX-License-Identifier: MIT
--->
-
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Bitwise Operations</title>
-    <link href="/admin.css" rel="stylesheet">
-    <link href="/list.css" rel="stylesheet">
-    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script type="text/x-mathjax-config">
-     MathJax.Hub.Config({
-       tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-     });
-    </script>
-    <script crossorigin="anonymous" integrity=
-            "sha384-Ra6zh6uYMmH5ydwCqqMoykyf1T/+ZcnOQfFPhDrp2kI4OIxadnhsvvA2vv9A7xYv" src=
-            "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-            type="text/javascript"></script>
-  </head>
-
-  <body>
-    <h1>SRFI 151: Bitwise Operations</h1>
-    <p class="authors">by John Cowan</p>
-    <p class="based-on"></p>
-    <p class="status">status: <em>final</em> (2017-07-10)</p>
-    <p class="keywords">keywords: <a href="https://srfi.schemers.org/?keywords=data-structure">Data Structure</a>, <a href="https://srfi.schemers.org/?keywords=r7rs-large">R7RS Large</a>, <a href="https://srfi.schemers.org/?keywords=r7rs-large-tangerine">R7RS Large: Tangerine Edition</a>, <a href="https://srfi.schemers.org/?keywords=numbers">Numbers</a></p><span class="see-also">See also <a href="/srfi-142/">SRFI 142: Bitwise Operations</a>.</span>
-    <p class="library-name">library name: bitwise-operations</p>
-
-    <ul class="info">
-      <li><a href="srfi-151.html">The SRFI Document</a></li>
-      <li><a href="https://srfi-email.schemers.org/srfi-151/">Discussion Archive</a></li>
-      <li><a href="https://github.com/scheme-requests-for-implementation/srfi-151">Git repo (on Github)</a></li>
-      <li>
-        <a href="mailto:srfi-151@srfi.schemers.org">srfi-151@<span class="antispam">nospam</span>srfi.schemers.org (subscribers only)</a></li>
-      <li>
-        <span class="firefox-column-workaround">
-          <form method="POST" action="https://www.simplelists.com/subscribe.php">
-            <div class="title">Subscribe to srfi-151 mailing list</div>
-            <input name="email"
-                   placeholder="email address"
-                   tabindex="1"
-                   type="email" >
-            <input name="name"
-                   placeholder="full name"
-                   tabindex="2"
-                   type="text" >
-            <p>
-              <input id="sub-digest"
-                     name="digest"
-                     tabindex="3"
-                     type="checkbox"
-                     value="digest" >
-              <label for="sub-digest">daily digest?</label></p>
-            <input class="submit"
-                   name="submit"
-                   tabindex="4"
-                   type="submit"
-                   value="Subscribe to srfi-151" >
-            <input type="hidden" name="action" value="subscribe">
-            <input type="hidden" name="list" value="srfi-151@srfi.schemers.org"></form></a></li>
-      <li>
-        <span class="firefox-column-workaround">
-          <form method="POST" action="https://www.simplelists.com/subscribe.php">
-            <p class="title">Unsubscribe from srfi-151 mailing list</p>
-            <input name="email"
-                   placeholder="email address"
-                   tabindex="5"
-                   type="email" >
-            <input class="submit"
-                   name="submit"
-                   tabindex="6"
-                   type="submit"
-                   value="Unsubscribe from srfi-151" >
-            <input name="action"
-                   type="hidden"
-                   value="unsubscribe" >
-            <input name="list"
-                   type="hidden"
-                   value="srfi-151@srfi.schemers.org"></form></a></li></ul>
-    <h2>Abstract</h2>      <p>This SRFI proposes a coherent and comprehensive
-      set of procedures for performing bitwise logical operations on integers;
-      it is accompanied by a reference implementation of the spec in terms of a
-      set of seven core operators. The sample implementation is portable, as
-      efficient as practical with pure Scheme arithmetic (it is much more
-      efficient to replace the core operators with C or assembly language if
-      possible), and open source.
-      <p>The precise semantics of these operators is
-      almost never an issue. A consistent, portable set of <em>names</em> and
-      <em>parameter conventions</em>, however, is. Hence this SRFI, which is
-      based mainly on <a href="https://srfi.schemers.org/srfi-33/">SRFI 33</a>, with some changes and
-      additions from <a href="http://srfi.schemers.org/srfi-33/mail-archive/msg00023.html">Olin's late
-      revisions to SRFI 33</a> (which were never consummated). <a href="https://srfi.schemers.org/srfi-60/">SRFI 60</a> (based on SLIB) is smaller but has a few
-      procedures of its own; some of its procedures have both native (often
-      Common Lisp) and SRFI 33 names. They have been incorporated into this
-      SRFI. <a href="http://www.r6rs.org/final/html/r6rs-lib/r6rs-lib-Z-H-12.html#node_sec_11.4">
-      R6RS</a> is a subset of SRFI 60, except that all procedure names begin
-      with a <code>bitwise-</code> prefix. A few procedures have been added from
-      the general vector <a href="https://srfi.schemers.org/srfi-133/">SRFI 133</a>.
-      <p>Among the applications of bitwise operations
-      are: hashing, Galois-field calculations of error-detecting and
-      error-correcting codes, cryptography and ciphers, pseudo-random number
-      generation, register-transfer-level modeling of digital logic designs,
-      Fast-Fourier transforms, packing and unpacking numbers in persistent data
-      structures, space-filling curves with applications to dimension reduction
-      and sparse multi-dimensional database indexes, and generating approximate
-      seed values for root-finders and transcendental function
-      algorithms.
-      <p>This SRFI differs from SRFI 142 in only two
-      ways:
-      <ol>
-        <li>
-          <p>The <code>bitwise-if</code> function has the
-          argument ordering of SLIB, SRFI 60, and R6RS rather than the ordering
-          of SRFI 33.
-        <li>
-          <p>The order in which bits are processed by
-          the procedures listed in the "Bits conversion" section has been
-          clarified and some of the procedures' names have been changed. See
-          "Bit processing order" for details.
-      </ol></body></html>
+    <head>
+      <!-- SPDX-FileCopyrightText: 2024 John Cowan -->
+      <!-- SPDX-License-Identifier: MIT -->
+      <title>Bitwise Operations</title>
+      <link href="/admin.css" rel="stylesheet">
+      <link href="/list.css" rel="stylesheet">
+      <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});</script>
+      <script crossorigin="anonymous" integrity="sha384-Ra6zh6uYMmH5ydwCqqMoykyf1T/+ZcnOQfFPhDrp2kI4OIxadnhsvvA2vv9A7xYv" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script></head>
+    <body>
+      <h1>SRFI 151: Bitwise Operations</h1>
+      <p class="authors">by John Cowan</p>
+      <p class="based-on"></p>
+      <p class="status">status: <em>final</em> (2017-07-10)</p>
+      <p class="keywords">keywords: <a href="https://srfi.schemers.org/?keywords=data-structure">Data Structure</a>, <a href="https://srfi.schemers.org/?keywords=r7rs-large">R7RS Large</a>, <a href="https://srfi.schemers.org/?keywords=r7rs-large-tangerine">R7RS Large: Tangerine Edition</a>, <a href="https://srfi.schemers.org/?keywords=numbers">Numbers</a></p><span class="see-also">See also <a href="/srfi-142/">SRFI 142: Bitwise Operations</a>.</span>
+      <p class="library-name">library name: bitwise-operations</p>
+      <ul class="info">
+        <li><a href="srfi-151.html">The SRFI Document</a></li>
+        <li><a href="https://srfi-email.schemers.org/srfi-151/">Discussion Archive</a></li>
+        <li><a href="https://github.com/scheme-requests-for-implementation/srfi-151">Git repo (on GitHub)</a></li>
+        <li><a href="mailto:srfi-151@srfi.schemers.org">srfi-151@<span class="antispam">nospam</span>srfi.schemers.org (subscribers only)</a></li>
+        <li><span class="firefox-column-workaround">
+            <form method="POST" action="https://www.simplelists.com/subscribe.php">
+              <div class="title">Subscribe to srfi-151 mailing list</div><input name="email" placeholder="email address" tabindex="1" type="email"><input name="name" placeholder="full name" tabindex="2" type="text">
+              <p><input id="sub-digest" name="digest" tabindex="3" type="checkbox" value="digest"><label for="sub-digest">daily digest?</label></p><input class="submit" name="submit" tabindex="4" type="submit" value="Subscribe to srfi-151"><input type="hidden" name="action" value="subscribe"><input type="hidden" name="list" value="srfi-151@srfi.schemers.org"></form></span></li>
+        <li><span class="firefox-column-workaround">
+            <form method="POST" action="https://www.simplelists.com/subscribe.php">
+              <div class="title">Unsubscribe from srfi-151 mailing list</div><input name="email" placeholder="email address" tabindex="5" type="email"><input class="submit" name="submit" tabindex="6" type="submit" value="Unsubscribe from srfi-151"><input type="hidden" name="action" value="unsubscribe"><input name="list" type="hidden" value="srfi-151@srfi.schemers.org"></form></span></li></ul>
+      <h2>Abstract</h2>      <p>This SRFI proposes a coherent and comprehensive       set of procedures for performing bitwise logical operations on integers;       it is accompanied by a reference implementation of the spec in terms of a       set of seven core operators. The sample implementation is portable, as       efficient as practical with pure Scheme arithmetic (it is much more       efficient to replace the core operators with C or assembly language if       possible), and open source.       <p>The precise semantics of these operators is       almost never an issue. A consistent, portable set of <em>names</em> and       <em>parameter conventions</em>, however, is. Hence this SRFI, which is       based mainly on <a href="https://srfi.schemers.org/srfi-33/">SRFI 33</a>, with some changes and       additions from <a href="http://srfi.schemers.org/srfi-33/mail-archive/msg00023.html">Olin's late       revisions to SRFI 33</a> (which were never consummated). <a href="https://srfi.schemers.org/srfi-60/">SRFI 60</a> (based on SLIB) is smaller but has a few       procedures of its own; some of its procedures have both native (often       Common Lisp) and SRFI 33 names. They have been incorporated into this       SRFI. <a href="http://www.r6rs.org/final/html/r6rs-lib/r6rs-lib-Z-H-12.html#node_sec_11.4">       R6RS</a> is a subset of SRFI 60, except that all procedure names begin       with a <code>bitwise-</code> prefix. A few procedures have been added from       the general vector <a href="https://srfi.schemers.org/srfi-133/">SRFI 133</a>.       <p>Among the applications of bitwise operations       are: hashing, Galois-field calculations of error-detecting and       error-correcting codes, cryptography and ciphers, pseudo-random number       generation, register-transfer-level modeling of digital logic designs,       Fast-Fourier transforms, packing and unpacking numbers in persistent data       structures, space-filling curves with applications to dimension reduction       and sparse multi-dimensional database indexes, and generating approximate       seed values for root-finders and transcendental function       algorithms.       <p>This SRFI differs from SRFI 142 in only two       ways:       <ol>         <li>           <p>The <code>bitwise-if</code> function has the           argument ordering of SLIB, SRFI 60, and R6RS rather than the ordering           of SRFI 33.         <li>           <p>The order in which bits are processed by           the procedures listed in the "Bits conversion" section has been           clarified and some of the procedures' names have been changed. See           "Bit processing order" for details.       </ol></body></html>
