@@ -1,5 +1,5 @@
 
-# SPDX-FileCopyrightText: 2024 John Cowan
+# SPDX-FileCopyrightText: 2024 Arthur A. Gleckler
 # SPDX-License-Identifier: MIT
 * SRFI 151: Bitwise Operations
 
