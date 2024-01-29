@@ -1,5 +1,7 @@
 ;;;; bitwise-other - functions not from SRFI 33 or SRFI 60
 ;;; Copyright John Cowan 2017
+;;;
+;;; SPDX-License-Identifier: MIT
 
 (define bits->vector
   (case-lambda

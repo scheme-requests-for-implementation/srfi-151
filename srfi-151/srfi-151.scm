@@ -1,3 +1,7 @@
+;;; SPDX-FileCopyrightText: 2017 John Cowan <cowan@ccil.org>
+;;;
+;;; SPDX-License-Identifier: MIT
+
 ;;;; chicken implementation of SRFI 151
 (module srfi-151 ()
   (import scheme)

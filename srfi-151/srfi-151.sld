@@ -1,3 +1,7 @@
+;;; SPDX-FileCopyrightText: 2017 John Cowan <cowan@ccil.org>
+;;;
+;;; SPDX-License-Identifier: MIT
+
 (define-library (srfi-151) 
   (import (scheme base))
   (import (scheme case-lambda))
